@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms of Service - EventPortal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        padding: 3rem 0;
+        text-align: center;
+    }
+
+    .content-section {
+        background: var(--card-dark);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        padding: 3rem;
+        margin: 2rem 0;
+    }
+
+    .section-header {
+        color: var(--text-light);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .section-content {
+        color: var(--text-gray);
+        line-height: 1.7;
+    }
+
+    .section-content h5 {
+        color: var(--text-light);
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .section-content ul {
+        padding-left: 1.5rem;
+    }
+
+    .section-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .important-notice {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .important-notice h5 {
+        color: #ffc107 !important;
+    }
+
+    .contact-info {
+        background: var(--secondary-dark);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-light mb-3">Terms of Service</h1>
+        <p class="text-muted">Last updated: August 5, 2025</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="content-section">
+                <section class="mb-5">
+                    <h3 class="section-header">1. Acceptance of Terms</h3>
+                    <div class="section-content">
+                        <p>By accessing and using EventPortal ("the Platform"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h3 class="section-header">2. Description of Service</h3>
+                    <div class="section-content">
+                        <p>EventPortal is a platform that connects verified volunteers with event managers who need temporary staff for events. Our services include:</p>
+                        <ul>
+                            <li>Event opportunity posting and application management</li>
+                            <li>User verification and background checks</li>
+                            <li>Payment processing and escrow services</li>
+                            <li>Rating and review systems</li>
+                            <li>Communication tools between users</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h3 class="section-header">3. User Accounts and Verification</h3>
+                    <div class="section-content">
+                        <h5>Account Creation:</h5>
+                        <ul>
+                            <li>You must be at least 18 years old to create an account</li>
+                            <li>You must provide accurate and complete information</li>
+                            <li>You are responsible for maintaining account security</li>
+                            <li>One person may maintain only one account</li>
+                        </ul>
+
+                        <h5>Verification Process:</h5>
+                        <ul>
+                            <li>All users must complete identity verification</li>
+                            <li>Government-issued ID required for verification</li>
+                            <li>False information may result in account termination</li>
+                            <li>Additional verification may be required for certain roles</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h3 class="section-header">4. User Responsibilities</h3>
+                    <div class="section-content">
+                        <div class="important-notice">
+                            <h5>Important Notice</h5>
+                            <p>Users are responsible for their conduct on the platform and must comply with all applicable laws and regulations.</p>
+                        </div>
+
+                        <h5>For Volunteers:</h5>
+                        <ul>
+                            <li>Arrive on time and fulfill work commitments</li>
+                            <li>Maintain professional conduct during events</li>
+                            <li>Report any issues or concerns promptly</li>
+                            <li>Provide honest feedback and ratings</li>
+                        </ul>
+
+                        <h5>For Event Managers:</h5>
+                        <ul>
+                            <li>Provide accurate job descriptions and requirements</li>
+                            <li>Ensure safe working conditions</li>
+                            <li>Make timely payments as agreed</li>
+                            <li>Treat volunteers with respect and professionalism</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h3 class="section-header">5. Payment Terms</h3>
+                    <div class="section-content">
+                        <p>Our platform facilitates secure payments between event managers and volunteers:</p>
+                        <ul>
+                            <li>All payments are processed through our secure system</li>
+                            <li>Platform fees apply to all transactions</li>
+                            <li>Payments are released after work completion verification</li>
+                            <li>Disputes must be reported within 48 hours</li>
+                            <li>Refunds are subject to our refund policy</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h3 class="section-header">6. Prohibited Activities</h3>
+                    <div class="section-content">
+                        <p>The following activities are strictly prohibited:</p>
+                        <ul>
+                            <li>Posting false or misleading information</li>
+                            <li>Harassment or discriminatory behavior</li>
+                            <li>Attempting to circumvent platform fees</li>
+                            <li>Sharing contact information for off-platform transactions</li>
+                            <li>Creating multiple accounts</li>
+                            <li>Posting inappropriate or illegal content</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h3 class="section-header">7. Termination</h3>
+                    <div class="section-content">
+                        <p>We reserve the right to terminate or suspend accounts that violate these terms. Termination may occur:</p>
+                        <ul>
+                            <li>Immediately for serious violations</li>
+                            <li>After warning for minor infractions</li>
+                            <li>At user request</li>
+                            <li>For extended periods of inactivity</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="mb-4">
+                    <h3 class="section-header">8. Contact Information</h3>
+                    <div class="section-content">
+                        <p>For questions about these Terms of Service, please contact us:</p>
+                    </div>
+                </section>
+            </div>
+
+            <div class="contact-info">
+                <h4 class="text-light mb-3">Legal Inquiries</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                        <p class="text-muted mb-0">legal@eventportal.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-phone fa-2x text-primary mb-2"></i>
+                        <p class="text-muted mb-0">+91 1234567890</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-gavel fa-2x text-primary mb-2"></i>
+                        <p class="text-muted mb-0">Legal Department</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
