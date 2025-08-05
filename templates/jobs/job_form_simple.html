@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post Event Job - Event Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        min-height: 100vh;
+        color: #ffffff;
+    }
+    
+    .simple-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .simple-form {
+        background: linear-gradient(145deg, #2a2a3e 0%, #3a3a5e 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        max-width: 700px;
+        margin: 0 auto;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #e8e8f0;
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+        display: block;
+    }
+    
+    .form-control, .form-select {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.95rem;
+        width: 100%;
+        color: #ffffff;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .form-control::placeholder, .form-select::placeholder {
+        color: rgba(255,255,255,0.6);
+    }
+    
+    .form-control:focus, .form-select:focus {
+        background: rgba(255,255,255,0.15);
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.3);
+        outline: none;
+        color: #ffffff;
+    }
+    
+    .requirements-section {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 1.2rem;
+        margin-top: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .req-item {
+        margin-bottom: 0.6rem;
+        display: flex;
+        align-items: center;
+        color: #e8e8f0;
+    }
+    
+    .req-item input {
+        margin-right: 0.6rem;
+        accent-color: #667eea;
+    }
+    
+    .req-item label {
+        color: #e8e8f0;
+        cursor: pointer;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        width: 100%;
+        margin-top: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #7c8dff 0%, #8a5ec2 100%);
+    }
+    
+    .small-text {
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.7);
+        margin-top: 0.3rem;
+    }
+    
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -0.5rem;
+    }
+    
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 0.5rem;
+    }
+    
+    .col-8 {
+        flex: 0 0 66.67%;
+        max-width: 66.67%;
+        padding: 0 0.25rem;
+    }
+    
+    .col-4 {
+        flex: 0 0 33.33%;
+        max-width: 33.33%;
+        padding: 0 0.25rem;
+    }
+    
+    /* Checkbox styling */
+    input[type="checkbox"] {
+        accent-color: #667eea;
+        margin-right: 0.5rem;
+        transform: scale(1.1);
+    }
+    
+    /* Select dropdown styling */
+    .form-select option {
+        background: #2a2a3e;
+        color: #ffffff;
+    }
+    
+    /* Professional container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-6, .col-8, .col-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        
+        .simple-form {
+            padding: 1.5rem;
+            margin: 0 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="simple-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2><i class="fas fa-plus-circle"></i> Post Event Job</h2>
+                <p class="mb-0">Quick & Professional Job Posting</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="simple-form">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">📋 Event Name *</label>
+                <input type="text" name="title" class="form-control" 
+                       placeholder="e.g. Wedding Reception, Mall Activity" required>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">👥 How Many Volunteers *</label>
+                        <input type="number" name="required_workers" class="form-control" 
+                               placeholder="e.g. 02" min="1" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">💰 Payment (₹) *</label>
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="number" name="pay_rate" class="form-control" 
+                                       placeholder="e.g. 800" min="0" required>
+                            </div>
+                            <div class="col-4">
+                                <select name="pay_type" class="form-select">
+                                    <option value="per_day" selected>Per Day</option>
+                                    <option value="per_hour">Per Hour</option>
+                                    <option value="total">Total</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">💼 Work Profile *</label>
+                <textarea name="description" class="form-control" rows="2" 
+                          placeholder="e.g. Mall activity, Event assistance, Registration support" required></textarea>
+                <div class="small-text">What will volunteers be doing?</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">🗓️ Number of Days (Optional)</label>
+                <input type="number" name="number_of_days" class="form-control" 
+                       placeholder="e.g. 2" min="1" max="30" id="number-of-days">
+                <div class="small-text">If multi-day event, specify how many days</div>
+            </div>
+            
+            <div id="single-date-section">
+                <div class="form-group">
+                    <label class="form-label">📅 Event Date *</label>
+                    <input type="date" name="event_date" class="form-control" required>
+                </div>
+            </div>
+            
+            <div id="multi-date-section" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">📅 Event Start Date *</label>
+                    <input type="date" name="event_start_date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">📅 Event End Date *</label>
+                    <input type="date" name="event_end_date" class="form-control">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">⏰ Reporting Time *</label>
+                <input type="text" name="reporting_time" class="form-control" 
+                       placeholder="e.g. 10:00 AM to 8:00 PM" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">📍 Venue *</label>
+                <input type="text" name="venue_name" class="form-control" 
+                       placeholder="e.g. Shoba Mall, Hotel Taj" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">🗺️ Location</label>
+                <input type="text" name="location_input" class="form-control" 
+                       placeholder="Address or Google Maps link">
+                <div class="small-text">Paste Google Maps link for easy navigation</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">👔 Dress Code</label>
+                <input type="text" name="dress_code" class="form-control" 
+                       placeholder="e.g. Blue jeans and sports shoes">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">📱 WhatsApp Number *</label>
+                <input type="text" name="whatsapp_number" class="form-control" 
+                       placeholder="e.g. 9742845679" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">👤 Contact Person</label>
+                <input type="text" name="contact_person" class="form-control" 
+                       placeholder="e.g. Manju">
+            </div>
+            
+            <div class="form-group">
+                <input type="checkbox" name="whatsapp_only" id="whatsapp-only" checked>
+                <label for="whatsapp-only">
+                    <strong>WhatsApp messages only, no calls strictly</strong>
+                </label>
+            </div>
+            
+            <!-- Requirements Section at the end -->
+            <div class="requirements-section">
+                <label class="form-label">📝 Requirements & Rules</label>
+                <div class="small-text mb-2">Select applicable requirements:</div>
+                
+                <div class="req-item">
+                    <input type="checkbox" name="requirements" value="be_early" id="req1">
+                    <label for="req1">Be 15 minutes early</label>
+                </div>
+                
+                <div class="req-item">
+                    <input type="checkbox" name="requirements" value="grooming" id="req2">
+                    <label for="req2">Grooming is Mandatory</label>
+                </div>
+                
+                <div class="req-item">
+                    <input type="checkbox" name="requirements" value="gps_photos" id="req3">
+                    <label for="req3">GPS Login/Logout photos required</label>
+                </div>
+                
+                <div class="req-item">
+                    <input type="checkbox" name="requirements" value="follow_rules" id="req4">
+                    <label for="req4">Follow all rules & regulations</label>
+                </div>
+                
+                <div class="req-item">
+                    <input type="checkbox" name="requirements" value="payment_deduction" id="req5">
+                    <label for="req5">Payment deduction for rule violations</label>
+                </div>
+                
+                <div class="form-group mt-2">
+                    <textarea name="additional_notes" class="form-control" rows="2" 
+                              placeholder="Any additional requirements or notes..."></textarea>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i> Post Job
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+// Handle number of days input to show/hide date fields
+document.getElementById('number-of-days').addEventListener('input', function() {
+    const numberOfDays = parseInt(this.value);
+    const singleDateSection = document.getElementById('single-date-section');
+    const multiDateSection = document.getElementById('multi-date-section');
+    
+    if (numberOfDays && numberOfDays > 1) {
+        // Multi-day event
+        singleDateSection.style.display = 'none';
+        multiDateSection.style.display = 'block';
+        
+        // Make multi-date fields required
+        document.querySelector('input[name="event_start_date"]').required = true;
+        document.querySelector('input[name="event_end_date"]').required = true;
+        document.querySelector('input[name="event_date"]').required = false;
+    } else {
+        // Single day event
+        singleDateSection.style.display = 'block';
+        multiDateSection.style.display = 'none';
+        
+        // Make single date field required
+        document.querySelector('input[name="event_date"]').required = true;
+        document.querySelector('input[name="event_start_date"]').required = false;
+        document.querySelector('input[name="event_end_date"]').required = false;
+    }
+});
+
+// Simple form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const requiredFields = this.querySelectorAll('[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.style.borderColor = '#dc3545';
+            isValid = false;
+        } else {
+            field.style.borderColor = '#ced4da';
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Please fill in all required fields marked with *');
+    }
+});
+
+// Auto-resize textareas
+document.querySelectorAll('textarea').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+});
+</script>
+{% endblock %}

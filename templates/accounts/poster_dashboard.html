@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+
+{% block title %}Manager Dashboard - Event Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="avatar-container mb-3">
+                        {% if user.userprofile.profile_picture %}
+                            <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile" class="rounded-circle" width="80" height="80">
+                        {% else %}
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 80px; height: 80px; margin: 0 auto;">
+                                <i class="fas fa-building fa-2x"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h5>{{ user.get_full_name }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <span class="badge bg-info">Event Manager</span>
+                    
+                    {% if user.userprofile.verification_status == 'approved' %}
+                        <div class="mt-2">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Quick Stats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Jobs Posted:</span>
+                        <span class="fw-bold">{{ total_jobs }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Active Jobs:</span>
+                        <span class="fw-bold text-primary">{{ active_jobs }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Applications:</span>
+                        <span class="fw-bold">{{ total_applications }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Success Rate:</span>
+                        <span class="fw-bold text-success">{{ success_rate }}%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'jobs:job_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Post New Job
+                        </a>
+                        <a href="{% url 'accounts:profile_update' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="fas fa-chart-bar"></i> Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Manager Dashboard</h2>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i> Filter Jobs
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?status=all">All Jobs</a></li>
+                        <li><a class="dropdown-item" href="?status=open">Open</a></li>
+                        <li><a class="dropdown-item" href="?status=filled">Filled</a></li>
+                        <li><a class="dropdown-item" href="?status=completed">Completed</a></li>
+                        <li><a class="dropdown-item" href="?status=cancelled">Cancelled</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Alert Section -->
+            {% if urgent_actions %}
+            <div class="alert alert-warning alert-dismissible fade show">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Action Required:</strong> You have {{ urgent_actions }} job(s) requiring immediate attention.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endif %}
+            
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-primary">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total Jobs
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_jobs }}</div>
+                                </div>
+                                <div class="fas fa-briefcase fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Applications
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_applications }}</div>
+                                </div>
+                                <div class="fas fa-users fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Pending Review
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_reviews }}</div>
+                                </div>
+                                <div class="fas fa-clock fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-info">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        This Month
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ monthly_jobs }}</div>
+                                </div>
+                                <div class="fas fa-calendar fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Jobs Management -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">My Jobs</h5>
+                    <a href="{% url 'jobs:job_create' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Post New Job
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if jobs %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Date</th>
+                                        <th>Pay</th>
+                                        <th>Status</th>
+                                        <th>Applications</th>
+                                        <th>Workers Needed</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for job in jobs %}
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <a href="{% url 'jobs:job_detail' job.pk %}" class="text-decoration-none fw-bold">
+                                                    {{ job.title }}
+                                                </a>
+                                                <br>
+                                                <small class="text-muted">{{ job.location }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>{{ job.start_date|date:"M d, Y" }}</div>
+                                            <small class="text-muted">{{ job.start_time }} - {{ job.end_time }}</small>
+                                        </td>
+                                        <td>₹{{ job.pay_rate }} <small class="text-muted">{{ job.get_pay_type_display }}</small></td>
+                                        <td>
+                                            {% if job.is_active %}
+                                                {% if job.selected_workers_count == job.required_workers %}
+                                                    <span class="badge bg-success">Filled</span>
+                                                {% else %}
+                                                    <span class="badge bg-primary">Open</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge bg-secondary">Closed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ job.applications_count }}</span>
+                                            {% if job.pending_applications_count > 0 %}
+                                                <span class="badge bg-warning ms-1">{{ job.pending_applications_count }} pending</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     style="width: {{ job.fill_percentage }}%"
+                                                     aria-valuenow="{{ job.selected_workers_count }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="{{ job.required_workers }}">
+                                                    {{ job.selected_workers_count }}/{{ job.required_workers }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-outline-primary" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'jobs:job_edit' job.pk %}" class="btn btn-outline-secondary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'jobs:job_applications' job.pk %}" class="btn btn-outline-info" title="Applications">
+                                                    <i class="fas fa-users"></i>
+                                                </a>
+                                                <button class="btn btn-outline-danger" onclick="confirmDelete({{ job.pk }})" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% if is_paginated %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                                </li>
+                                
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-plus-circle fa-3x text-muted mb-3"></i>
+                            <h5>No Jobs Posted Yet</h5>
+                            <p class="text-muted">Start posting jobs to connect with talented workers!</p>
+                            <a href="{% url 'jobs:job_create' %}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Post Your First Job
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Recent Applications -->
+            {% if recent_applications %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Applications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for application in recent_applications %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ application.volunteer.get_full_name }}</h6>
+                                <p class="mb-1 text-muted small">Applied for: {{ application.job.title }}</p>
+                                <small class="text-muted">{{ application.applied_at|timesince }} ago</small>
+                            </div>
+                            <div>
+                                <a href="{% url 'jobs:job_applications' application.job.pk %}" class="btn btn-outline-primary btn-sm">
+                                    Review
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this job? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(jobId) {
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = `/jobs/${jobId}/delete/`;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+</script>
+
+<style>
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+.text-xs {
+    font-size: 0.7rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Report Review - Event Portal{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .report-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .review-preview {
+        background: #f8f9fa;
+        border-left: 4px solid #dc3545;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .rating-stars {
+        color: #ffc107;
+        font-size: 1rem;
+    }
+    
+    .warning-box {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1><i class="fas fa-flag"></i> Report Review</h1>
+                <p class="lead mb-0">Help us maintain a safe and trustworthy community</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Warning Box -->
+            <div class="warning-box">
+                <h6 class="text-warning mb-2">
+                    <i class="fas fa-exclamation-triangle"></i> Before You Report
+                </h6>
+                <p class="mb-0 small">
+                    Please only report reviews that violate our community guidelines. False reports may result in restrictions on your account. 
+                    If you have a legitimate dispute about the review content, consider responding to the review instead.
+                </p>
+            </div>
+
+            <!-- Review Preview -->
+            <div class="review-preview">
+                <h6><i class="fas fa-eye"></i> Review Being Reported</h6>
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <strong>{{ review.reviewer.get_full_name|default:review.reviewer.username }}</strong>
+                        <div class="rating-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                </div>
+                {% if review.title %}
+                    <h6>{{ review.title }}</h6>
+                {% endif %}
+                <p class="mb-1">{{ review.comment|truncatewords:50 }}</p>
+                <small class="text-muted">
+                    Review for: {{ review.reviewee.get_full_name|default:review.reviewee.username }} • 
+                    Job: {{ review.job.title }}
+                </small>
+            </div>
+
+            <!-- Report Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-edit"></i> Report Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% crispy form %}
+                        
+                        <div class="d-flex gap-2 mt-3">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-flag"></i> Submit Report
+                            </button>
+                            <a href="{% url 'jobs:review_detail' review.id %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Community Guidelines -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-info-circle"></i> Community Guidelines</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-danger">What to Report:</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-times text-danger"></i> Spam or promotional content</li>
+                                <li><i class="fas fa-times text-danger"></i> Harassment or personal attacks</li>
+                                <li><i class="fas fa-times text-danger"></i> False or misleading information</li>
+                                <li><i class="fas fa-times text-danger"></i> Inappropriate or offensive language</li>
+                                <li><i class="fas fa-times text-danger"></i> Reviews not based on actual experience</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-success">Don't Report:</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="fas fa-check text-success"></i> Negative but honest reviews</li>
+                                <li><i class="fas fa-check text-success"></i> Constructive criticism</li>
+                                <li><i class="fas fa-check text-success"></i> Different opinions or preferences</li>
+                                <li><i class="fas fa-check text-success"></i> Reviews you simply disagree with</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What Happens Next -->
+            <div class="alert alert-info mt-3">
+                <h6><i class="fas fa-info-circle"></i> What Happens Next?</h6>
+                <p class="mb-0">
+                    Our moderation team will review your report within 24-48 hours. If the review violates our guidelines, 
+                    appropriate action will be taken. You will be notified of the outcome via email.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

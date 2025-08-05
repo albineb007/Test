@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post New Job - Event Portal{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .simple-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .simple-form {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .form-control-lg, .form-select-lg {
+        border-radius: 10px;
+        border: 2px solid #e1e5e9;
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control-lg:focus, .form-select-lg:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .requirements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .requirement-item {
+        background: #f8f9fa;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        transition: background-color 0.3s ease;
+    }
+    
+    .requirement-item:hover {
+        background: #e3f2fd;
+    }
+    
+    .requirement-item input[type="checkbox"] {
+        margin-right: 0.5rem;
+        transform: scale(1.2);
+    }
+    
+    .contact-preferences {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin: 1rem 0;
+    }
+    
+    .contact-option {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-width: 150px;
+        text-align: center;
+    }
+    
+    .contact-option:hover {
+        background: #e3f2fd;
+        border-color: #667eea;
+    }
+    
+    .contact-option input[type="checkbox"] {
+        display: none;
+    }
+    
+    .contact-option input[type="checkbox"]:checked + label {
+        color: #667eea;
+        font-weight: bold;
+    }
+    
+    .contact-option.selected {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+    }
+    
+    .tip-box {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .tip-box i {
+        color: #856404;
+        margin-right: 0.5rem;
+    }
+    
+    .location-suggestions {
+        background: white;
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .location-suggestion {
+        padding: 0.75rem;
+        cursor: pointer;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .location-suggestion:hover {
+        background: #f8f9fa;
+    }
+    
+    .submit-section {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    .btn-post-job {
+        background: white;
+        color: #28a745;
+        border: none;
+        padding: 1rem 3rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-post-job:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        color: #155724;
+    }
+    
+    @media (max-width: 768px) {
+        .requirements-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .contact-preferences {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="job-form-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1><i class="fas fa-plus-circle"></i> Post New Job Opportunity</h1>
+                <p class="lead mb-0">Find the perfect volunteers for your event in just a few simple steps</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <form method="post" id="job-form">
+        {% csrf_token %}
+        
+        <!-- Basic Information -->
+        <div class="form-section">
+            <h4><i class="fas fa-info-circle"></i> Basic Information</h4>
+            
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">{{ form.title.label }}</label>
+                {{ form.title }}
+                {% if form.title.help_text %}
+                    <div class="form-text">{{ form.title.help_text }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">{{ form.description.label }}</label>
+                {{ form.description }}
+                <div class="tip-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong>Tip:</strong> Describe what volunteers will be doing, the event atmosphere, and any special requirements.
+                </div>
+            </div>
+        </div>
+
+        <!-- Location & Venue -->
+        <div class="form-section">
+            <h4><i class="fas fa-map-marker-alt"></i> Location & Venue</h4>
+            
+            <div class="mb-4 position-relative">
+                <label for="{{ form.location_input.id_for_label }}" class="form-label fw-bold">📍 Location</label>
+                {{ form.location_input }}
+                <div class="location-suggestions" id="location-suggestions"></div>
+                <div class="form-text">{{ form.location_input.help_text }}</div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.venue_name.id_for_label }}" class="form-label fw-bold">{{ form.venue_name.label }}</label>
+                {{ form.venue_name }}
+            </div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="form-section">
+            <h4><i class="fas fa-calendar-alt"></i> Event Details</h4>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="{{ form.event_date.id_for_label }}" class="form-label fw-bold">{{ form.event_date.label }}</label>
+                    {{ form.event_date }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.event_duration_days.id_for_label }}" class="form-label fw-bold">{{ form.event_duration_days.label }}</label>
+                    {{ form.event_duration_days }}
+                    <div class="form-text">{{ form.event_duration_days.help_text }}</div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <div class="form-check">
+                    {{ form.has_multiple_dates }}
+                    <label class="form-check-label" for="{{ form.has_multiple_dates.id_for_label }}">
+                        {{ form.has_multiple_dates.label }}
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-4" id="end-date-field" style="display: none;">
+                <label for="{{ form.event_end_date.id_for_label }}" class="form-label fw-bold">{{ form.event_end_date.label }}</label>
+                {{ form.event_end_date }}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.required_workers.id_for_label }}" class="form-label fw-bold">{{ form.required_workers.label }}</label>
+                {{ form.required_workers }}
+                <div class="form-text">{{ form.required_workers.help_text }}</div>
+            </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="form-section">
+            <h4><i class="fas fa-list-check"></i> Requirements</h4>
+            
+            <label class="form-label fw-bold">{{ form.requirements_checkboxes.label }}</label>
+            <div class="requirements-grid">
+                {% for choice in form.requirements_checkboxes %}
+                    <div class="requirement-item">
+                        {{ choice.tag }}
+                        {{ choice.choice_label }}
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="tip-box">
+                <i class="fas fa-info-circle"></i>
+                <strong>Note:</strong> These common requirements will be automatically added to your job post.
+            </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-section">
+            <h4><i class="fas fa-money-bill-wave"></i> Payment Details</h4>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="{{ form.pay_rate.id_for_label }}" class="form-label fw-bold">{{ form.pay_rate.label }}</label>
+                    {{ form.pay_rate }}
+                    <div class="form-text">{{ form.pay_rate.help_text }}</div>
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.pay_type.id_for_label }}" class="form-label fw-bold">{{ form.pay_type.label }}</label>
+                    {{ form.pay_type }}
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.benefits.id_for_label }}" class="form-label fw-bold">{{ form.benefits.label }}</label>
+                {{ form.benefits }}
+            </div>
+        </div>
+
+        <!-- Additional Details -->
+        <div class="form-section">
+            <h4><i class="fas fa-cog"></i> Additional Details</h4>
+            
+            <div class="mb-4">
+                <label for="{{ form.dress_code.id_for_label }}" class="form-label fw-bold">{{ form.dress_code.label }}</label>
+                {{ form.dress_code }}
+            </div>
+        </div>
+
+        <!-- Contact Preferences -->
+        <div class="form-section">
+            <h4><i class="fas fa-phone"></i> Contact Preferences</h4>
+            
+            <label class="form-label fw-bold">{{ form.contact_preference.label }}</label>
+            <div class="contact-preferences">
+                {% for choice in form.contact_preference %}
+                    <div class="contact-option" onclick="toggleContactOption(this)">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">
+                            <i class="fas fa-comments"></i><br>
+                            {{ choice.choice_label }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <label for="{{ form.whatsapp_number.id_for_label }}" class="form-label fw-bold">{{ form.whatsapp_number.label }}</label>
+                    {{ form.whatsapp_number }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.contact_phone.id_for_label }}" class="form-label fw-bold">{{ form.contact_phone.label }}</label>
+                    {{ form.contact_phone }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <h4><i class="fas fa-rocket"></i> Ready to Post?</h4>
+            <p class="mb-3">Your job will be visible to all registered volunteers immediately after posting.</p>
+            <button type="submit" class="btn btn-post-job">
+                <i class="fas fa-paper-plane"></i> Post Job Opportunity
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Handle multiple dates checkbox
+document.addEventListener('DOMContentLoaded', function() {
+    const multipleDatesCheckbox = document.getElementById('{{ form.has_multiple_dates.id_for_label }}');
+    const endDateField = document.getElementById('end-date-field');
+    
+    if (multipleDatesCheckbox) {
+        multipleDatesCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                endDateField.style.display = 'block';
+                document.getElementById('{{ form.event_end_date.id_for_label }}').required = true;
+            } else {
+                endDateField.style.display = 'none';
+                document.getElementById('{{ form.event_end_date.id_for_label }}').required = false;
+            }
+        });
+    }
+});
+
+// Contact option toggle
+function toggleContactOption(element) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    
+    if (checkbox.checked) {
+        element.classList.add('selected');
+    } else {
+        element.classList.remove('selected');
+    }
+}
+
+// Location autocomplete (basic implementation)
+document.addEventListener('DOMContentLoaded', function() {
+    const locationInput = document.getElementById('location-input');
+    const suggestions = document.getElementById('location-suggestions');
+    
+    // Sample locations (in real implementation, you'd use Google Places API)
+    const sampleLocations = [
+        'Mumbai, Maharashtra',
+        'Delhi, New Delhi',
+        'Bangalore, Karnataka',
+        'Hyderabad, Telangana',
+        'Chennai, Tamil Nadu',
+        'Kolkata, West Bengal',
+        'Pune, Maharashtra',
+        'Ahmedabad, Gujarat',
+        'Jaipur, Rajasthan',
+        'Surat, Gujarat'
+    ];
+    
+    locationInput.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        suggestions.innerHTML = '';
+        
+        if (value.length > 2) {
+            const matches = sampleLocations.filter(location => 
+                location.toLowerCase().includes(value)
+            );
+            
+            if (matches.length > 0) {
+                suggestions.style.display = 'block';
+                matches.forEach(match => {
+                    const div = document.createElement('div');
+                    div.className = 'location-suggestion';
+                    div.textContent = match;
+                    div.onclick = function() {
+                        locationInput.value = match;
+                        suggestions.style.display = 'none';
+                    };
+                    suggestions.appendChild(div);
+                });
+            } else {
+                suggestions.style.display = 'none';
+            }
+        } else {
+            suggestions.style.display = 'none';
+        }
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.position-relative')) {
+            suggestions.style.display = 'none';
+        }
+    });
+});
+
+// Form validation and enhancement
+document.getElementById('job-form').addEventListener('submit', function(e) {
+    const title = document.getElementById('{{ form.title.id_for_label }}').value;
+    const description = document.getElementById('{{ form.description.id_for_label }}').value;
+    const location = document.getElementById('location-input').value;
+    const payRate = document.getElementById('{{ form.pay_rate.id_for_label }}').value;
+    
+    if (!title || !description || !location || !payRate) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+        return false;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('.btn-post-job');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+    submitBtn.disabled = true;
+});
+</script>
+{% endblock %}

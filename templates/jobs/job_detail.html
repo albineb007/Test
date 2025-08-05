@@ -1,0 +1,475 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <!-- Job Header -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h2 class="card-title mb-2">{{ job.title }}</h2>
+                            <div class="job-meta">
+                                <span class="badge bg-info me-2">{{ job.category.name }}</span>
+                                {% if job.is_urgent %}
+                                    <span class="badge bg-danger me-2">Urgent</span>
+                                {% endif %}
+                                {% if job.is_featured %}
+                                    <span class="badge bg-warning me-2">Featured</span>
+                                {% endif %}
+                                <span class="badge bg-secondary">{{ job.get_experience_level_display }}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="pay-info">
+                                <h4 class="text-success mb-0">₹{{ job.pay_rate }}</h4>
+                                <small class="text-muted">{{ job.get_pay_type_display }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Quick Info -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Location</small>
+                                    <strong>{{ job.location }}</strong>
+                                    {% if job.venue_name %}
+                                        <small class="text-muted d-block">{{ job.venue_name }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-calendar text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Event Duration</small>
+                                    <strong>{{ job.event_duration_display }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Time</small>
+                                    <strong>{{ job.start_time|time:"H:i" }} - {{ job.end_time|time:"H:i" }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Positions</small>
+                                    <strong>{{ job.remaining_positions }}/{{ job.required_workers }} available</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Posted By Information -->
+                    <div class="d-flex align-items-center mb-4 p-3 bg-light rounded">
+                        <div class="me-3">
+                            <i class="fas fa-user-circle fa-2x text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-2">Posted by {{ job.poster.get_full_name|default:job.poster.username }}</h6>
+                                {% with verification=job.verification_status %}
+                                    {% if verification.is_verified %}
+                                        <span class="badge bg-success" 
+                                              data-bs-toggle="tooltip" 
+                                              data-bs-placement="top" 
+                                              title="Verified {{ verification.verification_type }}: {{ verification.verification_details }}">
+                                            <i class="fas fa-check-circle"></i> Verified
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary" 
+                                              data-bs-toggle="tooltip" 
+                                              data-bs-placement="top" 
+                                              title="Not verified">
+                                            <i class="fas fa-question-circle"></i> Unverified
+                                        </span>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            <small class="text-muted">
+                                Posted {{ job.created_at|timesince }} ago 
+                                {% if job.view_count > 0 %}• {{ job.view_count }} views{% endif %}
+                            </small>
+                        </div>
+                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-clock text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Time</small>
+                                    <strong>{{ job.start_time|time:"H:i" }} - {{ job.end_time|time:"H:i" }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users text-primary me-2"></i>
+                                <div>
+                                    <small class="text-muted d-block">Positions</small>
+                                    <strong>{{ job.remaining_positions }}/{{ job.required_workers }} available</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="text-muted">Positions Filled</small>
+                            <small class="text-muted">{{ job.selected_workers_count }}/{{ job.required_workers }}</small>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: {{ job.fill_percentage }}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-8">
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if user.is_authenticated %}
+                                    {% if user.is_volunteer %}
+                                        {% if can_apply %}
+                                            <a href="{% url 'jobs:job_apply' job.pk %}" class="btn btn-success btn-lg">
+                                                <i class="fas fa-paper-plane"></i> Apply Now
+                                            </a>
+                                        {% elif has_applied %}
+                                            <button class="btn btn-secondary btn-lg" disabled>
+                                                <i class="fas fa-check"></i> Applied
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-secondary btn-lg" disabled>
+                                                <i class="fas fa-times"></i> Cannot Apply
+                                            </button>
+                                        {% endif %}
+                                        
+                                        <button class="btn btn-outline-primary save-job" data-job-id="{{ job.pk }}">
+                                            {% if is_saved %}
+                                                <i class="fas fa-heart text-danger"></i> Saved
+                                            {% else %}
+                                                <i class="fas fa-heart"></i> Save
+                                            {% endif %}
+                                        </button>
+                                    {% elif user.can_post_jobs and job.poster == user %}
+                                        <a href="{% url 'jobs:job_update' job.pk %}" class="btn btn-primary">
+                                            <i class="fas fa-edit"></i> Edit Job
+                                        </a>
+                                        <a href="{% url 'jobs:job_applications_manage' job.pk %}" class="btn btn-info">
+                                            <i class="fas fa-users"></i> Manage Applications ({{ job.applications_count }})
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'accounts:login' %}" class="btn btn-success btn-lg">
+                                        <i class="fas fa-sign-in-alt"></i> Login to Apply
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Contact Options -->
+                        <div class="col-md-4">
+                            <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                                {% if job.enable_whatsapp and job.get_whatsapp_url %}
+                                    <a href="{{ job.get_whatsapp_url }}" 
+                                       class="btn btn-success contact-btn" 
+                                       data-contact-type="whatsapp" 
+                                       data-job-id="{{ job.pk }}"
+                                       target="_blank">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                        {% if job.whatsapp_clicks > 0 %}
+                                            <small class="d-block">{{ job.whatsapp_clicks }} contacts</small>
+                                        {% endif %}
+                                    </a>
+                                {% endif %}
+                                
+                                {% if job.enable_call and job.contact_phone %}
+                                    <a href="tel:{{ job.contact_phone }}" 
+                                       class="btn btn-primary contact-btn" 
+                                       data-contact-type="call" 
+                                       data-job-id="{{ job.pk }}">
+                                        <i class="fas fa-phone"></i> Call Now
+                                        {% if job.call_clicks > 0 %}
+                                            <small class="d-block">{{ job.call_clicks }} calls</small>
+                                        {% endif %}
+                                    </a>
+                                {% endif %}
+                                
+                                <button class="btn btn-outline-secondary" onclick="window.print()">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="shareJob()">
+                                    <i class="fas fa-share"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Description -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Job Description</h5>
+                </div>
+                <div class="card-body">
+                    <div class="job-description">
+                        {{ job.description|linebreaks }}
+                    </div>
+                    
+                    {% if job.address %}
+                        <h6 class="mt-4 mb-2">Full Address</h6>
+                        <p class="text-muted">{{ job.address }}</p>
+                        
+                        <!-- Google Maps Section -->
+                        {% if job.google_maps_url or job.latitude and job.longitude %}
+                            <h6 class="mt-4 mb-3">Location Map</h6>
+                            <div class="map-container">
+                                {% if job.google_maps_embed_url %}
+                                    <iframe 
+                                        src="{{ job.google_maps_embed_url }}"
+                                        width="100%" 
+                                        height="300" 
+                                        style="border:0;" 
+                                        allowfullscreen="" 
+                                        loading="lazy" 
+                                        referrerpolicy="no-referrer-when-downgrade">
+                                    </iframe>
+                                {% elif job.google_maps_url %}
+                                    <div class="d-flex align-items-center p-3 border rounded">
+                                        <i class="fas fa-map-marker-alt text-primary me-3 fa-2x"></i>
+                                        <div>
+                                            <h6 class="mb-1">View on Google Maps</h6>
+                                            <a href="{{ job.google_maps_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-external-link-alt"></i> Open in Google Maps
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% if job.requirements %}
+                        <h6 class="mt-4 mb-2">Requirements</h6>
+                        <div class="requirements">
+                            {{ job.requirements|linebreaks }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if job.benefits %}
+                        <h6 class="mt-4 mb-2">Benefits</h6>
+                        <div class="benefits">
+                            {{ job.benefits|linebreaks }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if job.dress_code %}
+                        <h6 class="mt-4 mb-2">Dress Code</h6>
+                        <p>{{ job.dress_code }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Required Skills -->
+            {% if job.required_skills.exists %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Required Skills</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for skill in job.required_skills.all %}
+                            <span class="badge bg-primary me-2 mb-2">{{ skill.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Job Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Job Summary</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <strong>Duration:</strong> {{ job.duration_hours }} hour{{ job.duration_hours|pluralize }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Experience Level:</strong> {{ job.get_experience_level_display }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Minimum Age:</strong> {{ job.min_age }} years
+                        </li>
+                        <li class="mb-2">
+                            <strong>Total Budget:</strong> ₹{{ job.total_budget|floatformat:2 }}
+                        </li>
+                        {% if job.application_deadline %}
+                            <li class="mb-2">
+                                <strong>Apply By:</strong> {{ job.application_deadline|date:"M d, Y H:i" }}
+                            </li>
+                        {% endif %}
+                        <li class="mb-2">
+                            <strong>Posted:</strong> {{ job.created_at|timesince }} ago
+                        </li>
+                        <li class="mb-0">
+                            <strong>Applications:</strong> {{ job.applications_count }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Poster Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">Posted By</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        {% if job.poster.profile_picture %}
+                            <img src="{{ job.poster.profile_picture.url }}" alt="{{ job.poster.get_full_name }}" 
+                                 class="rounded-circle me-3" width="50" height="50">
+                        {% else %}
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h6 class="mb-0">{{ job.poster.get_full_name|default:job.poster.username }}</h6>
+                            <small class="text-muted">Event Organizer</small>
+                            {% if job.poster.is_profile_verified %}
+                                <i class="fas fa-check-circle text-success" title="Verified"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if job.contact_person %}
+                        <p class="mb-1"><strong>Contact Person:</strong> {{ job.contact_person }}</p>
+                    {% endif %}
+                    {% if job.contact_phone %}
+                        <p class="mb-0"><strong>Phone:</strong> {{ job.contact_phone }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Related Jobs -->
+            {% if related_jobs %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">Related Jobs</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for related_job in related_jobs %}
+                            <div class="border-bottom p-3">
+                                <h6 class="mb-1">
+                                    <a href="{% url 'jobs:job_detail' related_job.pk %}" class="text-decoration-none">
+                                        {{ related_job.title|truncatechars:30 }}
+                                    </a>
+                                </h6>
+                                <small class="text-muted d-block">{{ related_job.location }}</small>
+                                <small class="text-success">₹{{ related_job.pay_rate }} {{ related_job.get_pay_type_display }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function shareJob() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ job.title }}',
+            text: 'Check out this job opportunity: {{ job.title }} in {{ job.location }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            EventPortal.showToast('Job link copied to clipboard!', 'success');
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Contact button tracking
+    document.querySelectorAll('.contact-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const contactType = this.dataset.contactType;
+            const jobId = this.dataset.jobId;
+            
+            // Track the contact click
+            fetch(`/jobs/${jobId}/track-contact/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'contact_type': contactType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the click count display if needed
+                    console.log(`${contactType} click tracked`);
+                }
+            })
+            .catch(error => {
+                console.error('Error tracking contact:', error);
+            });
+        });
+    });
+    
+    // Save/unsave job functionality
+    const saveBtn = document.querySelector('.save-job');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            const jobId = this.dataset.jobId;
+            fetch(`/jobs/${jobId}/save/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.saved) {
+                    this.innerHTML = '<i class="fas fa-heart text-danger"></i> Saved';
+                } else {
+                    this.innerHTML = '<i class="fas fa-heart"></i> Save';
+                }
+                EventPortal.showToast(data.message, 'success');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

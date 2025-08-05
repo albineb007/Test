@@ -1,0 +1,720 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Apply for {{ job.title }} - Event Portal{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary-color: #0066cc;
+    --primary-dark: #004499;
+    --secondary-color: #00a0b0;
+    --success-color: #008000;
+    --warning-color: #ff6b00;
+    --danger-color: #dc3545;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --dark-text: #2f3349;
+    --light-text: #666;
+    --border-color: #e1e5e9;
+    --shadow-light: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-medium: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-dark: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-text);
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb .breadcrumb-item a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+}
+
+.breadcrumb .breadcrumb-item.active {
+    color: white;
+}
+
+/* Application Container */
+.application-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.application-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 2rem;
+    border: none;
+}
+
+.card-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.card-header .lead {
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Job Summary Section */
+.job-summary {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.job-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.company-logo {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.4rem;
+}
+
+.job-info h2 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.company-name {
+    color: var(--light-text);
+    margin: 0 0 0.5rem 0;
+}
+
+.job-location {
+    color: var(--light-text);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.job-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.detail-icon {
+    width: 20px;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.salary-highlight {
+    background: white;
+    border: 2px solid var(--success-color);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.salary-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--success-color);
+    margin: 0;
+}
+
+.salary-type {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+/* Application Form */
+.application-form {
+    padding: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.required {
+    color: var(--danger-color);
+}
+
+.form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-text {
+    font-size: 0.85rem;
+    color: var(--light-text);
+    margin-top: 0.25rem;
+}
+
+/* Skills Section */
+.skills-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.skill-tag {
+    background: #e8f4f8;
+    color: var(--primary-color);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Warning/Info Boxes */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.alert-info {
+    background: #e8f4f8;
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid var(--warning-color);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-secondary {
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--light-text);
+}
+
+.btn-secondary:hover {
+    background: var(--light-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* Action Buttons */
+.form-actions {
+    background: var(--light-bg);
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Progress Indicator */
+.application-progress {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.progress-steps::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.step {
+    background: white;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+.step.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.step.completed {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.5rem 0;
+    }
+    
+    .application-form {
+        padding: 1.5rem;
+    }
+    
+    .job-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .job-details {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+}
+
+/* Success Animation */
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.success-animation {
+    animation: successPulse 0.5s ease-in-out;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'jobs:job_list' %}">Jobs</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'jobs:job_detail' job.pk %}">{{ job.title|truncatechars:30 }}</a></li>
+                <li class="breadcrumb-item active">Apply</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container application-container">
+    <!-- Application Progress -->
+    <div class="application-progress">
+        <div class="progress-steps">
+            <div class="step completed">1</div>
+            <div class="step active">2</div>
+            <div class="step">3</div>
+        </div>
+        <div class="d-flex justify-content-between mt-2">
+            <small>View Job</small>
+            <small><strong>Apply Now</strong></small>
+            <small>Confirmation</small>
+        </div>
+    </div>
+
+    <div class="application-card">
+        <!-- Card Header -->
+        <div class="card-header">
+            <h1>Apply for This Position</h1>
+            <p class="lead">Complete your application to connect with the event manager</p>
+        </div>
+
+        <!-- Job Summary -->
+        <div class="job-summary">
+            <div class="job-header">
+                <div class="company-logo">
+                    {{ job.poster.get_full_name|first|upper }}
+                </div>
+                <div class="job-info">
+                    <h2>{{ job.title }}</h2>
+                    <p class="company-name">{{ job.poster.get_full_name }}</p>
+                    <div class="job-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ job.location }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-details">
+                <div class="detail-item">
+                    <i class="fas fa-calendar-alt detail-icon"></i>
+                    <span>{{ job.event_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-clock detail-icon"></i>
+                    <span>{{ job.event_duration }} hours</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-users detail-icon"></i>
+                    <span>{{ job.remaining_positions }} position{{ job.remaining_positions|pluralize }} left</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-layer-group detail-icon"></i>
+                    <span>{{ job.category.name }}</span>
+                </div>
+            </div>
+
+            <div class="salary-highlight">
+                <p class="salary-amount">₹{{ job.pay_rate }}</p>
+                <p class="salary-type">{{ job.get_pay_type_display }}</p>
+            </div>
+        </div>
+
+        <!-- Application Form -->
+        <form method="post" class="application-form">
+            {% csrf_token %}
+            
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if form.errors %}
+            <div class="alert alert-warning">
+                <strong>Please correct the following errors:</strong>
+                <ul class="mb-0 mt-2">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Personal Information -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-user me-2"></i>
+                    Personal Information
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.full_name.id_for_label }}">
+                                Full Name <span class="required">*</span>
+                            </label>
+                            {{ form.full_name }}
+                            <div class="form-text">As it appears on your ID</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label" for="{{ form.phone.id_for_label }}">
+                                Phone Number <span class="required">*</span>
+                            </label>
+                            {{ form.phone }}
+                            <div class="form-text">WhatsApp number preferred</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.email.id_for_label }}">
+                        Email Address <span class="required">*</span>
+                    </label>
+                    {{ form.email }}
+                    <div class="form-text">We'll send application updates here</div>
+                </div>
+            </div>
+
+            <!-- Experience & Skills -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-star me-2"></i>
+                    Experience & Skills
+                </h3>
+
+                {% if user.skills.exists %}
+                <div class="alert alert-info">
+                    <strong>Your Skills:</strong>
+                    <div class="skills-display">
+                        {% for skill in user.skills.all %}
+                        <span class="skill-tag">{{ skill.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.experience.id_for_label }}">
+                        Relevant Experience
+                    </label>
+                    {{ form.experience }}
+                    <div class="form-text">Describe your relevant experience for this type of event</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.why_interested.id_for_label }}">
+                        Why are you interested in this opportunity?
+                    </label>
+                    {{ form.why_interested }}
+                    <div class="form-text">Help the event manager understand your motivation</div>
+                </div>
+            </div>
+
+            <!-- Availability -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-calendar-check me-2"></i>
+                    Availability
+                </h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="{{ form.availability_note.id_for_label }}">
+                        Availability Details
+                    </label>
+                    {{ form.availability_note }}
+                    <div class="form-text">Mention any time constraints or special requirements</div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Event Details:</strong><br>
+                    Date: {{ job.event_date|date:"l, F d, Y" }}<br>
+                    Duration: {{ job.event_duration }} hours<br>
+                    {% if job.event_time %}Time: {{ job.event_time }}{% endif %}
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            {% if job.requirements %}
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-clipboard-list me-2"></i>
+                    Job Requirements
+                </h3>
+                <div class="alert alert-warning">
+                    <strong>Please ensure you meet these requirements:</strong>
+                    <div class="mt-2">{{ job.requirements|linebreaks }}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Terms & Confirmation -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-handshake me-2"></i>
+                    Confirmation
+                </h3>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="terms_agreement" required>
+                    <label class="form-check-label" for="terms_agreement">
+                        I confirm that all information provided is accurate and I meet the job requirements
+                    </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="contact_agreement" required>
+                    <label class="form-check-label" for="contact_agreement">
+                        I agree to be contacted by the event manager via WhatsApp or phone
+                    </label>
+                </div>
+            </div>
+        </form>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <div class="d-flex align-items-center text-muted">
+                <i class="fas fa-shield-alt me-2"></i>
+                Your information is secure and will only be shared with the event manager.
+            </div>
+            <div class="btn-group">
+                <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Job
+                </a>
+                <button type="submit" form="application-form" class="btn btn-primary btn-lg">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Application
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add form ID to the form element
+    const form = document.querySelector('.application-form');
+    if (form) {
+        form.id = 'application-form';
+    }
+    
+    // Smooth animations for form interactions
+    const formControls = document.querySelectorAll('.form-control');
+    formControls.forEach(control => {
+        control.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        control.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+    
+    // Character counter for text areas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        const maxLength = textarea.getAttribute('maxlength');
+        if (maxLength) {
+            const counter = document.createElement('div');
+            counter.className = 'form-text text-end';
+            counter.textContent = `0 / ${maxLength}`;
+            textarea.parentElement.appendChild(counter);
+            
+            textarea.addEventListener('input', function() {
+                counter.textContent = `${this.value.length} / ${maxLength}`;
+                if (this.value.length > maxLength * 0.9) {
+                    counter.style.color = 'var(--warning-color)';
+                } else {
+                    counter.style.color = 'var(--light-text)';
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

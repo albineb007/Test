@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Applications - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Job Header -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h3 mb-2">{{ job.title }}</h1>
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-calendar me-2"></i>{{ job.event_date }}
+                        <span class="mx-2">|</span>
+                        <i class="fas fa-map-marker-alt me-2"></i>{{ job.location }}
+                        <span class="mx-2">|</span>
+                        <i class="fas fa-users me-2"></i>{{ job.required_workers }} positions needed
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-outline-primary">
+                        <i class="fas fa-eye"></i> View Job
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-paper-plane fa-2x text-primary mb-2"></i>
+                    <h5 class="card-title">{{ applications|length }}</h5>
+                    <p class="card-text text-muted">Total Applications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                    <h5 class="card-title">{{ applications|dictsort:"status"|dictsortreversed:"status"|slice:":5"|length }}</h5>
+                    <p class="card-text text-muted">Pending Review</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-check fa-2x text-success mb-2"></i>
+                    <h5 class="card-title">{% for app in applications %}{% if app.status == 'accepted' %}{{ forloop.counter0|add:1 }}{% endif %}{% endfor %}</h5>
+                    <p class="card-text text-muted">Accepted</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-times fa-2x text-danger mb-2"></i>
+                    <h5 class="card-title">{% for app in applications %}{% if app.status == 'rejected' %}{{ forloop.counter0|add:1 }}{% endif %}{% endfor %}</h5>
+                    <p class="card-text text-muted">Rejected</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications Management -->
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Applications</h5>
+                <div class="d-flex gap-2">
+                    <!-- Bulk Actions -->
+                    <form method="post" action="{% url 'jobs:bulk_application_action' job.pk %}" class="d-flex gap-2" id="bulkActionForm">
+                        {% csrf_token %}
+                        <select name="bulk_action" class="form-select form-select-sm" required>
+                            <option value="">Bulk Action</option>
+                            <option value="accept">Accept Selected</option>
+                            <option value="reject">Reject Selected</option>
+                            <option value="review">Mark as Under Review</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-primary" onclick="return confirmBulkAction()">
+                            Apply
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {% if applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="40">
+                                    <input type="checkbox" id="selectAll" class="form-check-input">
+                                </th>
+                                <th>Applicant</th>
+                                <th>Applied On</th>
+                                <th>Status</th>
+                                <th>Experience</th>
+                                <th>Expected Rate</th>
+                                <th width="200">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="selected_applications" value="{{ application.pk }}" class="form-check-input application-checkbox" form="bulkActionForm">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-3">
+                                            {% if application.volunteer.profile_picture %}
+                                                <img src="{{ application.volunteer.profile_picture.url }}" class="avatar-img rounded-circle" alt="{{ application.volunteer.get_full_name }}">
+                                            {% else %}
+                                                <div class="avatar-initials rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    {{ application.volunteer.first_name|first }}{{ application.volunteer.last_name|first }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ application.volunteer.get_full_name }}</h6>
+                                            <small class="text-muted">{{ application.volunteer.email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">{{ application.applied_at|date:"M d, Y" }}</span><br>
+                                    <small class="text-muted">{{ application.applied_at|time:"H:i" }}</small>
+                                </td>
+                                <td>
+                                    {% if application.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif application.status == 'under_review' %}
+                                        <span class="badge bg-info">Under Review</span>
+                                    {% elif application.status == 'accepted' %}
+                                        <span class="badge bg-success">Accepted</span>
+                                    {% elif application.status == 'rejected' %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                    {% elif application.status == 'withdrawn' %}
+                                        <span class="badge bg-secondary">Withdrawn</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if application.relevant_experience %}
+                                        <span class="text-truncate d-inline-block" style="max-width: 150px;" title="{{ application.relevant_experience }}">
+                                            {{ application.relevant_experience|truncatechars:30 }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted">No experience provided</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if application.expected_rate %}
+                                        <strong class="text-success">₹{{ application.expected_rate }}</strong>
+                                    {% else %}
+                                        <span class="text-muted">As per job</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        {% if application.status == 'pending' or application.status == 'under_review' %}
+                                            <a href="{% url 'jobs:application_action' application.pk 'accept' %}" 
+                                               class="btn btn-sm btn-success" 
+                                               onclick="return confirm('Accept this application?')"
+                                               title="Accept">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                            <a href="{% url 'jobs:application_action' application.pk 'reject' %}" 
+                                               class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Reject this application?')"
+                                               title="Reject">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if application.status == 'pending' %}
+                                            <a href="{% url 'jobs:application_action' application.pk 'review' %}" 
+                                               class="btn btn-sm btn-info"
+                                               title="Mark as Under Review">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        {% endif %}
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                type="button" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#applicationModal{{ application.pk }}"
+                                                title="View Details">
+                                            <i class="fas fa-info"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No Applications Yet</h5>
+                    <p class="text-muted">Applications will appear here when people apply for this job.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Application Detail Modals -->
+{% for application in applications %}
+<div class="modal fade" id="applicationModal{{ application.pk }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Application Details - {{ application.volunteer.get_full_name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Personal Information</h6>
+                        <p><strong>Name:</strong> {{ application.volunteer.get_full_name }}</p>
+                        <p><strong>Email:</strong> {{ application.volunteer.email }}</p>
+                        <p><strong>Phone:</strong> {{ application.volunteer.phone_number|default:"Not provided" }}</p>
+                        <p><strong>Location:</strong> {{ application.volunteer.location|default:"Not provided" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Application Details</h6>
+                        <p><strong>Applied On:</strong> {{ application.applied_at|date:"M d, Y H:i" }}</p>
+                        <p><strong>Expected Rate:</strong> 
+                            {% if application.expected_rate %}₹{{ application.expected_rate }}{% else %}As per job posting{% endif %}
+                        </p>
+                        <p><strong>Availability:</strong> 
+                            {% if application.availability_confirmed %}Confirmed{% else %}Not confirmed{% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                {% if application.cover_letter %}
+                <div class="mt-3">
+                    <h6>Cover Letter</h6>
+                    <p class="text-muted">{{ application.cover_letter }}</p>
+                </div>
+                {% endif %}
+                
+                {% if application.relevant_experience %}
+                <div class="mt-3">
+                    <h6>Relevant Experience</h6>
+                    <p class="text-muted">{{ application.relevant_experience }}</p>
+                </div>
+                {% endif %}
+                
+                {% if application.additional_skills %}
+                <div class="mt-3">
+                    <h6>Additional Skills</h6>
+                    <p class="text-muted">{{ application.additional_skills }}</p>
+                </div>
+                {% endif %}
+                
+                {% if application.volunteer.skills.all %}
+                <div class="mt-3">
+                    <h6>Skills</h6>
+                    {% for skill in application.volunteer.skills.all %}
+                        <span class="badge bg-light text-dark me-1">{{ skill.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                {% if application.status == 'pending' or application.status == 'under_review' %}
+                    <a href="{% url 'jobs:application_action' application.pk 'accept' %}" 
+                       class="btn btn-success"
+                       onclick="return confirm('Accept this application?')">
+                        <i class="fas fa-check"></i> Accept
+                    </a>
+                    <a href="{% url 'jobs:application_action' application.pk 'reject' %}" 
+                       class="btn btn-danger"
+                       onclick="return confirm('Reject this application?')">
+                        <i class="fas fa-times"></i> Reject
+                    </a>
+                {% endif %}
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+// Select all functionality
+document.getElementById('selectAll').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.application-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+});
+
+// Confirm bulk action
+function confirmBulkAction() {
+    const selected = document.querySelectorAll('.application-checkbox:checked');
+    const action = document.querySelector('select[name="bulk_action"]').value;
+    
+    if (selected.length === 0) {
+        alert('Please select at least one application.');
+        return false;
+    }
+    
+    if (!action) {
+        alert('Please select an action.');
+        return false;
+    }
+    
+    return confirm(`Are you sure you want to ${action} ${selected.length} application(s)?`);
+}
+</script>
+{% endblock %}

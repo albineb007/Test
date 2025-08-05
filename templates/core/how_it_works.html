@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block title %}How It Works - EventPortal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        padding: 4rem 0;
+        text-align: center;
+    }
+
+    .process-section {
+        padding: 4rem 0;
+    }
+
+    .process-card {
+        background: var(--card-dark);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        padding: 2rem;
+        height: 100%;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .process-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-blue);
+    }
+
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-blue);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+    }
+
+    .role-section {
+        margin-bottom: 4rem;
+    }
+
+    .role-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .role-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--accent-blue);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 2rem;
+        color: white;
+    }
+
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+        margin: 4rem 0;
+        border: none;
+    }
+
+    .cta-section {
+        background: var(--secondary-dark);
+        padding: 4rem 0;
+        text-align: center;
+    }
+
+    .feature-highlight {
+        background: rgba(0, 102, 255, 0.1);
+        border: 1px solid rgba(0, 102, 255, 0.2);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+
+    .feature-highlight h4 {
+        color: var(--accent-blue);
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold text-light mb-4">How EventPortal Works</h1>
+        <p class="lead text-muted mb-0">Simple steps to connect talent with opportunities</p>
+    </div>
+</div>
+
+<div class="process-section">
+    <div class="container">
+        <!-- For Volunteers -->
+        <div class="role-section">
+            <div class="role-header">
+                <div class="role-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="fw-bold text-light mb-3">For Volunteers</h2>
+                <p class="text-muted">Start your journey in the event industry</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">1</div>
+                        <h5 class="fw-bold text-light mb-3">Sign Up & Verify</h5>
+                        <p class="text-muted">Create your volunteer account and complete verification for better opportunities.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">2</div>
+                        <h5 class="fw-bold text-light mb-3">Browse Opportunities</h5>
+                        <p class="text-muted">Search and filter events by location, skills, pay rate, and availability.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">3</div>
+                        <h5 class="fw-bold text-light mb-3">Apply & Get Selected</h5>
+                        <p class="text-muted">Apply with one click and get notified when you're selected for an event.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">4</div>
+                        <h5 class="fw-bold text-light mb-3">Work & Get Paid</h5>
+                        <p class="text-muted">Complete your work and receive secure payments directly to your account.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+        
+        <!-- For Event Managers -->
+        <div class="role-section">
+            <div class="role-header">
+                <div class="role-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h2 class="fw-bold text-light mb-3">For Event Managers</h2>
+                <p class="text-muted">Find reliable talent for your events</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">1</div>
+                        <h5 class="fw-bold text-light mb-3">Create Account</h5>
+                        <p class="text-muted">Register as an event manager and get verified to post opportunities.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">2</div>
+                        <h5 class="fw-bold text-light mb-3">Post Opportunities</h5>
+                        <p class="text-muted">Create detailed job postings with requirements and compensation details.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">3</div>
+                        <h5 class="fw-bold text-light mb-3">Review Applications</h5>
+                        <p class="text-muted">Browse applications and select the best candidates for your event.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="process-card">
+                        <div class="step-number">4</div>
+                        <h5 class="fw-bold text-light mb-3">Manage & Pay</h5>
+                        <p class="text-muted">Coordinate your team and process payments securely through the platform.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="feature-highlight">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h4 class="fw-bold">Verification System</h4>
+                    <p class="text-muted mb-0">All users go through our comprehensive verification process to ensure safety and reliability for everyone on the platform.</p>
+                </div>
+                <div class="col-md-6 text-center">
+                    <i class="fas fa-shield-check fa-4x" style="color: var(--accent-blue);"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-highlight">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center">
+                    <i class="fas fa-credit-card fa-4x" style="color: var(--accent-green);"></i>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="fw-bold">Secure Payments</h4>
+                    <p class="text-muted mb-0">Our secure payment system ensures that volunteers get paid on time and event managers have payment protection.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="cta-section">
+    <div class="container">
+        <h2 class="fw-bold text-light mb-4">Ready to Get Started?</h2>
+        <p class="text-muted mb-4">Join the EventPortal community today</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="{% url 'accounts:register' %}?role=volunteer" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Join as Volunteer
+            </a>
+            <a href="{% url 'accounts:register' %}?role=manager" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-briefcase me-2"></i>Post Events
+            </a>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{% url 'jobs:job_list' %}" class="btn btn-link text-muted">
+                <i class="fas fa-search me-1"></i>Browse Current Opportunities
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

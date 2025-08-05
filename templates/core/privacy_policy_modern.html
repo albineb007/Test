@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy - EventPortal{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        padding: 3rem 0;
+        text-align: center;
+    }
+
+    .content-section {
+        background: var(--card-dark);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        padding: 3rem;
+        margin: 2rem 0;
+    }
+
+    .privacy-section {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .privacy-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .section-number {
+        color: var(--accent-blue);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .privacy-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .privacy-list li {
+        padding: 0.5rem 0;
+        color: var(--text-gray);
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .privacy-list li:before {
+        content: "•";
+        color: var(--accent-blue);
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+    }
+
+    .highlight-box {
+        background: rgba(0, 102, 255, 0.1);
+        border: 1px solid rgba(0, 102, 255, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .contact-info {
+        background: var(--secondary-dark);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .last-updated {
+        font-style: italic;
+        color: var(--text-gray);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-5 fw-bold text-light mb-3">Privacy Policy</h1>
+        <p class="lead text-muted mb-0">Your privacy and data protection are our priority</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="last-updated">
+                Last updated: {{ "now"|date:"F d, Y" }}
+            </div>
+
+            <div class="content-section">
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">1.</span> Information We Collect
+                    </h3>
+                    <p class="text-muted mb-3">We collect information you provide directly to us when you create an account, post events, apply for opportunities, or contact us for support.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold text-light mb-2">Personal Information:</h5>
+                            <ul class="privacy-list">
+                                <li>Name, email address, and phone number</li>
+                                <li>Profile information and bio</li>
+                                <li>Skills and experience details</li>
+                                <li>Government ID for verification</li>
+                                <li>Payment information for transactions</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold text-light mb-2">Event-Related Information:</h5>
+                            <ul class="privacy-list">
+                                <li>Event postings and descriptions</li>
+                                <li>Application materials and responses</li>
+                                <li>Work history and ratings</li>
+                                <li>Location and availability preferences</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">2.</span> How We Use Your Information
+                    </h3>
+                    <p class="text-muted mb-3">We use the information we collect to provide and improve our services:</p>
+                    <ul class="privacy-list">
+                        <li>Provide, maintain, and improve our platform</li>
+                        <li>Match volunteers with appropriate opportunities</li>
+                        <li>Verify user identities and prevent fraud</li>
+                        <li>Process payments and transactions securely</li>
+                        <li>Send notifications about opportunities and updates</li>
+                        <li>Provide customer support and respond to inquiries</li>
+                        <li>Analyze usage patterns to improve user experience</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">3.</span> Information Sharing
+                    </h3>
+                    <p class="text-muted mb-3">We may share your information in the following situations:</p>
+                    <ul class="privacy-list">
+                        <li>With event managers when you apply for opportunities</li>
+                        <li>With service providers who assist our operations</li>
+                        <li>When required by law or to protect our rights</li>
+                        <li>In connection with a business transfer or sale</li>
+                    </ul>
+                    
+                    <div class="highlight-box">
+                        <h5 class="fw-bold" style="color: var(--accent-blue);">We Never:</h5>
+                        <ul class="privacy-list mb-0">
+                            <li>Sell your personal information to third parties</li>
+                            <li>Share your data without your consent</li>
+                            <li>Use your information for unauthorized purposes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">4.</span> Data Security
+                    </h3>
+                    <p class="text-muted mb-3">We implement appropriate security measures to protect your information:</p>
+                    <ul class="privacy-list">
+                        <li>Encryption of sensitive data in transit and at rest</li>
+                        <li>Regular security assessments and updates</li>
+                        <li>Limited access to personal information</li>
+                        <li>Secure payment processing through trusted providers</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">5.</span> Your Rights
+                    </h3>
+                    <p class="text-muted mb-3">You have the following rights regarding your personal information:</p>
+                    <ul class="privacy-list">
+                        <li>Access and review your personal information</li>
+                        <li>Update or correct inaccurate information</li>
+                        <li>Delete your account and associated data</li>
+                        <li>Opt out of marketing communications</li>
+                        <li>Request a copy of your data</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">6.</span> Cookies and Tracking
+                    </h3>
+                    <p class="text-muted mb-3">We use cookies and similar technologies to:</p>
+                    <ul class="privacy-list">
+                        <li>Remember your preferences and settings</li>
+                        <li>Improve site performance and user experience</li>
+                        <li>Analyze site usage and traffic patterns</li>
+                        <li>Provide personalized content and features</li>
+                    </ul>
+                </div>
+
+                <div class="privacy-section">
+                    <h3 class="fw-bold text-light mb-3">
+                        <span class="section-number">7.</span> Changes to This Policy
+                    </h3>
+                    <p class="text-muted mb-0">We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date.</p>
+                </div>
+            </div>
+
+            <div class="contact-info">
+                <h4 class="fw-bold text-light mb-3">Questions About Privacy?</h4>
+                <p class="text-muted mb-3">If you have any questions about this Privacy Policy, please contact us:</p>
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+                    <a href="mailto:privacy@eventportal.com" class="text-decoration-none">
+                        <i class="fas fa-envelope me-2" style="color: var(--accent-blue);"></i>
+                        <span class="text-muted">privacy@eventportal.com</span>
+                    </a>
+                    <a href="tel:+1234567890" class="text-decoration-none">
+                        <i class="fas fa-phone me-2" style="color: var(--accent-blue);"></i>
+                        <span class="text-muted">+1 (234) 567-8900</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,927 @@
+{% extends 'base.html' %}
+
+{% block title %}EventPortal - Modern Event Management Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+        padding: 5rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(0, 102, 255, 0.1) 0%, transparent 70%);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, var(--text-light) 0%, var(--accent-blue) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-gray);
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-cta-primary {
+        background: var(--accent-blue);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-cta-primary:hover {
+        background: #0052cc;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+        color: white;
+    }
+
+    .btn-cta-secondary {
+        background: transparent;
+        color: var(--text-light);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-subtle);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-cta-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        transform: translateY(-2px);
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 5rem 0;
+        background: var(--secondary-dark);
+    }
+
+    .feature-card {
+        background: var(--card-dark);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-subtle);
+        height: 100%;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-blue);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-light);
+    }
+
+    .feature-description {
+        color: var(--text-gray);
+        line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 3rem 0;
+        background: var(--primary-dark);
+        text-align: center;
+    }
+
+    .stat-item {
+        margin-bottom: 2rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--accent-blue);
+        display: block;
+    }
+
+    .stat-label {
+        color: var(--text-gray);
+        font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-cta-primary,
+        .btn-cta-secondary {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                {% if user.is_authenticated %}
+                    <h1 class="hero-title">
+                        Welcome back, {{ user.first_name|default:user.username }}
+                    </h1>
+                    <p class="hero-subtitle">
+                        Ready to discover your next exciting event opportunity? Connect with amazing teams and create memorable experiences.
+                    </p>
+                {% else %}
+                    <h1 class="hero-title">
+                        Modern Event Management
+                    </h1>
+                    <p class="hero-subtitle">
+                        Connect talented individuals with exciting event opportunities. Join thousands creating memorable experiences together.
+                    </p>
+                {% endif %}
+
+                <div class="cta-buttons">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'accounts:register' %}" class="btn-cta-primary">
+                            <i class="fas fa-rocket"></i>
+                            Get Started Free
+                        </a>
+                        <a href="{% url 'jobs:job_list' %}" class="btn-cta-secondary">
+                            <i class="fas fa-search"></i>
+                            Browse Opportunities
+                        </a>
+                    {% else %}
+                        <a href="{% url 'jobs:job_list' %}" class="btn-cta-primary">
+                            <i class="fas fa-search"></i>
+                            Find Opportunities
+                        </a>
+                        {% if user.can_post_jobs %}
+                            <a href="{% url 'jobs:job_create' %}" class="btn-cta-secondary">
+                                <i class="fas fa-plus"></i>
+                                Post Event
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="h1 fw-bold text-light mb-3">Why Choose EventPortal?</h2>
+                <p class="text-muted">Everything you need to manage events successfully</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="feature-title">Connect & Collaborate</h3>
+                        <p class="feature-description">
+                            Join a community of event professionals and talented individuals ready to create amazing experiences.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="feature-title">Smart Matching</h3>
+                        <p class="feature-description">
+                            Our intelligent system matches the right people with the right opportunities based on skills and preferences.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Secure & Reliable</h3>
+                        <p class="feature-description">
+                            Built with security and reliability in mind. Your data is protected and your events run smoothly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% if show_stats %}
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ total_jobs|default:"0" }}</span>
+                        <span class="stat-label">Active Events</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ total_volunteers|default:"0" }}</span>
+                        <span class="stat-label">Active Users</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ total_applications|default:"0" }}</span>
+                        <span class="stat-label">Applications</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ successful_placements|default:"0" }}</span>
+                        <span class="stat-label">Successful Matches</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: var(--primary-dark);
+        border-radius: 80px 80px 0 0;
+    }
+
+    .rounded-element {
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 204, 106, 0.1));
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+
+    .element-1 {
+        width: 140px;
+        height: 140px;
+        top: 15%;
+        right: 15%;
+        background: linear-gradient(135deg, var(--card-dark), rgba(0, 255, 136, 0.2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+    }
+
+    .element-2 {
+        width: 120px;
+        height: 120px;
+        top: 45%;
+        right: 25%;
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), var(--card-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 30px rgba(0, 255, 136, 0.3);
+    }
+
+    .element-3 {
+        width: 100px;
+        height: 100px;
+        top: 25%;
+        right: 35%;
+        background: linear-gradient(135deg, var(--accent-green), #00cc6a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 25px rgba(0, 255, 136, 0.4);
+    }
+
+    .element-4 {
+        width: 110px;
+        height: 110px;
+        top: 60%;
+        right: 10%;
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), var(--card-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 30px rgba(0, 255, 136, 0.25);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--text-light);
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.4rem;
+        color: var(--text-gray);
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    .acceptance-notice {
+        background: linear-gradient(135deg, var(--accent-green), #00cc6a);
+        color: var(--primary-dark);
+        padding: 1rem 2rem;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2.5rem;
+        font-weight: 700;
+        box-shadow: 0 6px 25px rgba(0, 255, 136, 0.3);
+        animation: pulse-glow 2s infinite;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 6px 25px rgba(0, 255, 136, 0.3); }
+        50% { box-shadow: 0 8px 35px rgba(0, 255, 136, 0.5); }
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-action {
+        background: linear-gradient(135deg, var(--accent-green), #00cc6a);
+        color: var(--primary-dark);
+        border: none;
+        padding: 1.25rem 2.5rem;
+        border-radius: 35px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 6px 25px rgba(0, 255, 136, 0.3);
+    }
+
+    .btn-primary-action:hover {
+        background: linear-gradient(135deg, #00cc6a, var(--accent-green));
+        color: var(--primary-dark);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 35px rgba(0, 255, 136, 0.5);
+    }
+
+    /* Icon styling for rounded elements */
+    .element-icon {
+        font-size: 2.5rem;
+        color: var(--accent-green);
+    }
+
+    .element-3 .element-icon {
+        color: var(--primary-dark);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .rounded-element {
+            display: none;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Rounded Pattern Design -->
+<div class="hero-section">
+    <!-- Floating Rounded Elements -->
+    <div class="rounded-element element-1">
+        <i class="fas fa-rocket element-icon"></i>
+    </div>
+    <div class="rounded-element element-2">
+        <i class="fas fa-dollar-sign element-icon"></i>
+    </div>
+    <div class="rounded-element element-3">
+        <i class="fas fa-headset element-icon"></i>
+    </div>
+    <div class="rounded-element element-4">
+        <i class="fas fa-users element-icon"></i>
+    </div>
+
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-7 hero-content">
+                {% if user.is_authenticated %}
+                    <h1 class="hero-title">
+                        Hello, <span style="color: var(--accent-green);"></span>{{ user.first_name|default:user.username }}</span>!<br>
+                        <span style="color: var(--text-gray);">Where Events<br>Come To Life</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Welcome back! Ready to find your next exciting event opportunity? 
+                        Our platform helps you discover meaningful work and connect with amazing teams.
+                    </p>
+                {% else %}
+                    <h1 class="hero-title">
+                        Where Event<br>
+                        <span style="color: var(--accent-green);">Careers Go<br>To Grow</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Don't figure it out alone. That's slow and risky. Our Event Portal 
+                        network helps you make smarter decisions faster. No B.S. Just 
+                        actionable support at every step.
+                    </p>
+                {% endif %}
+
+                <div class="acceptance-notice">
+                    <i class="fas fa-fire"></i>
+                    Now Accepting Applications
+                </div>
+
+                <div class="cta-buttons">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'accounts:register' %}" class="btn-primary-action">
+                            Apply to Join Us
+                        </a>
+                    {% else %}
+                        <a href="{% url 'jobs:job_list' %}" class="btn-primary-action">
+                            <i class="fas fa-search"></i>
+                            Find Opportunities
+                        </a>
+                        {% if user.can_post_jobs %}
+                            <a href="{% url 'jobs:job_create' %}" class="btn-primary-action" style="background: var(--secondary-green);">
+                                <i class="fas fa-plus"></i>
+                                Post Event
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Partners Section -->
+<div id="partners" class="py-5" style="background: var(--primary-dark);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase tracking-wide mb-3" style="color: var(--text-gray); letter-spacing: 2px;">FOUNDERS & OPERATORS OF</h6>
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="partner-logo">
+                        <span style="font-family: cursive; font-size: 1.2rem; color: var(--text-gray);">Little spoon.</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="partner-logo">
+                        <span style="font-weight: bold; color: var(--text-gray);">GYRATION</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="partner-logo">
+                        <span style="font-weight: bold; color: var(--text-gray);">spi</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="partner-logo">
+                        <span style="color: var(--text-gray);">THE SUMMIT</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-6 mb-3">
+                    <div class="partner-logo">
+                        <span style="font-style: italic; color: var(--text-gray);">Entrepreneur</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section - Only for Admins -->
+{% if show_stats %}
+<div class="py-5" style="background: var(--secondary-dark);">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold" style="color: var(--text-light);">Platform Statistics</h3>
+            <p style="color: var(--text-gray);">Admin Dashboard Overview</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card border-0 h-100 text-center" style="background: var(--card-dark); box-shadow: 0 4px 15px rgba(0, 255, 136, 0.1);">
+                    <div class="card-body">
+                        <div class="feature-icon mb-3" style="background: linear-gradient(135deg, var(--accent-green), #00cc6a); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="fas fa-briefcase fa-2x" style="color: var(--primary-dark);"></i>
+                        </div>
+                        <h3 class="fw-bold" style="color: var(--accent-green);">{{ total_jobs }}</h3>
+                        <p style="color: var(--text-gray);">Active Job Postings</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-success bg-gradient text-white rounded-3 mb-3">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold text-success">{{ total_volunteers }}</h3>
+                        <p class="text-muted">Registered Users</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-info bg-gradient text-white rounded-3 mb-3">
+                            <i class="fas fa-paper-plane fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold text-info">{{ total_applications }}</h3>
+                        <p class="text-muted">Total Applications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-warning bg-gradient text-white rounded-3 mb-3">
+                            <i class="fas fa-handshake fa-2x"></i>
+                        </div>
+                        <h3 class="fw-bold text-warning">{{ successful_placements }}</h3>
+                        <p class="text-muted">Successful Placements</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Alert for Important Stats -->
+{% if urgent_jobs or jobs_this_week %}
+<div class="py-3 bg-warning bg-gradient text-dark">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-circle fa-2x me-3"></i>
+                    <div>
+                        <h6 class="mb-0 fw-bold">
+                            {% if urgent_jobs %}
+                                {{ urgent_jobs }} urgent job{{ urgent_jobs|pluralize }} available!
+                            {% endif %}
+                            {% if jobs_this_week %}
+                                {{ jobs_this_week }} event{{ jobs_this_week|pluralize }} happening this week.
+                            {% endif %}
+                        </h6>
+                        <small>Don't miss out on these opportunities</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'jobs:job_list' %}?urgent=1" class="btn btn-dark">
+                    <i class="fas fa-bolt"></i> View Urgent Jobs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Featured Jobs Section -->
+{% if featured_jobs %}
+<div class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            {% if user.is_authenticated %}
+                <h2 class="fw-bold">Recommended for You</h2>
+                <p class="lead text-muted">
+                    <i class="fas fa-magic text-primary me-2"></i>
+                    Personalized opportunities based on your profile and interests
+                </p>
+            {% else %}
+                <h2 class="fw-bold">Latest Opportunities</h2>
+                <p class="lead text-muted">Discover exciting volunteer opportunities from different categories</p>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            {% for job in featured_jobs %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card h-100 shadow-sm border-0 job-card">
+                    <div class="card-header bg-white border-bottom-0">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-title fw-bold mb-1">{{ job.title }}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-building"></i> {{ job.poster.get_full_name }}
+                                </small>
+                            </div>
+                            {% if job.is_urgent %}
+                                <span class="badge bg-danger">URGENT</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-muted small">{{ job.description|truncatewords:15 }}</p>
+                        
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="border-end">
+                                    <div class="fw-bold text-success">₹{{ job.pay_rate }}</div>
+                                    <small class="text-muted">{{ job.get_pay_type_display }}</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border-end">
+                                    <div class="fw-bold text-primary">{{ job.duration_hours }}h</div>
+                                    <small class="text-muted">Duration</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="fw-bold text-info">{{ job.remaining_positions }}</div>
+                                <small class="text-muted">Positions</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar"></i> {{ job.event_date|date:"M d" }}
+                            </small>
+                        </div>
+                        
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: {{ job.fill_percentage }}%"></div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-outline-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'jobs:job_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-th-large"></i> View All Opportunities
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Popular Categories -->
+{% if popular_categories %}
+<div class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Popular Categories</h2>
+            <p class="lead text-muted">Explore opportunities by category</p>
+        </div>
+        
+        <div class="row">
+            {% for category in popular_categories %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="category-icon mb-3">
+                            <i class="fas fa-star fa-2x text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold">{{ category.category__name }}</h5>
+                        <p class="text-muted">{{ category.job_count }} active job{{ category.job_count|pluralize }}</p>
+                        <a href="{% url 'jobs:job_list' %}?category={{ category.category__name }}" class="btn btn-outline-primary">
+                            Browse Jobs
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- How It Works Section -->
+<div class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How It Works</h2>
+            <p class="lead text-muted">Simple steps to get started</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="text-center">
+                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-user-plus fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold">Sign Up</h4>
+                    <p class="text-muted">Create your account as a volunteer or event manager in minutes</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="text-center">
+                    <div class="feature-icon bg-success bg-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-search fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold">Find & Apply</h4>
+                    <p class="text-muted">Browse opportunities and apply for events that match your interests</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="text-center">
+                    <div class="feature-icon bg-info bg-gradient text-white rounded-circle mb-3 mx-auto">
+                        <i class="fas fa-handshake fa-2x"></i>
+                    </div>
+                    <h4 class="fw-bold">Connect & Work</h4>
+                    <p class="text-muted">Get selected and participate in amazing events while earning money</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats for Logged-in Users -->
+{% if user.is_authenticated %}
+<div class="py-4 bg-dark text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h4 class="mb-2">Welcome back, {{ user.first_name|default:user.username }}!</h4>
+                <p class="mb-0 text-white-50">
+                    {% if user.role == 'volunteer' %}
+                        You have {{ my_applications|default:0 }} total applications
+                        {% if pending_applications %}
+                            and {{ pending_applications }} pending reviews
+                        {% endif %}
+                    {% elif user.role == 'manager' %}
+                        You have posted {{ my_jobs|default:0 }} jobs and received {{ my_applications|default:0 }} applications
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                {% if user.role == 'volunteer' %}
+                    <a href="{% url 'accounts:volunteer_dashboard' %}" class="btn btn-light">
+                        <i class="fas fa-tachometer-alt"></i> My Dashboard
+                    </a>
+                {% elif user.role == 'manager' %}
+                    <a href="{% url 'accounts:poster_dashboard' %}" class="btn btn-light">
+                        <i class="fas fa-tachometer-alt"></i> My Dashboard
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.feature-icon {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.job-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-icon {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    background: rgba(13, 110, 253, 0.1);
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+</style>
+{% endblock %}
+{% endblock %}

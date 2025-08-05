@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review Details - Event Portal{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    .review-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem 0;
+    }
+    
+    .rating-stars {
+        color: #ffc107;
+        font-size: 1.2rem;
+    }
+    
+    .detailed-ratings {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+    }
+    
+    .rating-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .rating-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .reviewer-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .review-actions {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 1.5rem;
+    }
+    
+    .helpful-btn {
+        background: none;
+        border: 1px solid #dee2e6;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        transition: all 0.2s ease;
+    }
+    
+    .helpful-btn:hover {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    
+    .helpful-btn.active {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    
+    .response-section {
+        background: #e9f7ff;
+        border-left: 4px solid #007bff;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 0 10px 10px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="review-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-star"></i> Review Details</h1>
+                <p class="lead mb-0">Detailed review information</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Reviewer Info -->
+                    <div class="reviewer-info">
+                        {% if review.reviewer.profile_picture %}
+                            <img src="{{ review.reviewer.profile_picture.url }}" alt="{{ review.reviewer.get_full_name }}" class="reviewer-avatar">
+                        {% else %}
+                            <div class="reviewer-avatar bg-secondary d-flex align-items-center justify-content-center">
+                                <i class="fas fa-user text-white fa-2x"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h4 class="mb-1">{{ review.reviewer.get_full_name|default:review.reviewer.username }}</h4>
+                            <p class="text-muted mb-0">
+                                Reviewed {{ review.reviewee.get_full_name|default:review.reviewee.username }}
+                                on {{ review.created_at|date:"M d, Y" }}
+                            </p>
+                        </div>
+                        <div class="ms-auto text-end">
+                            <div class="rating-stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </div>
+                            <small class="text-muted">{{ review.rating }}/5 Overall</small>
+                        </div>
+                    </div>
+
+                    <!-- Review Title -->
+                    {% if review.title %}
+                        <h5 class="mb-3">{{ review.title }}</h5>
+                    {% endif %}
+
+                    <!-- Review Comment -->
+                    <div class="mb-3">
+                        <p>{{ review.comment|linebreaks }}</p>
+                    </div>
+
+                    <!-- Job Information -->
+                    <div class="mb-3">
+                        <h6><i class="fas fa-briefcase"></i> Related Job</h6>
+                        <p class="mb-1">
+                            <a href="{% url 'jobs:job_detail' review.job.pk %}" class="text-decoration-none">
+                                {{ review.job.title }}
+                            </a>
+                        </p>
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-map-marker-alt"></i> {{ review.job.location }} • 
+                            <i class="fas fa-calendar"></i> {{ review.job.event_date|date:"M d, Y" }}
+                        </p>
+                    </div>
+
+                    <!-- Detailed Ratings -->
+                    {% if review.punctuality or review.quality or review.communication or review.professionalism %}
+                        <div class="detailed-ratings">
+                            <h6 class="mb-3"><i class="fas fa-chart-bar"></i> Detailed Ratings</h6>
+                            
+                            {% if review.punctuality %}
+                                <div class="rating-item">
+                                    <span>Punctuality</span>
+                                    <div>
+                                        <span class="rating-stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.punctuality %}★{% else %}☆{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <small class="text-muted ms-1">{{ review.punctuality }}/5</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if review.quality %}
+                                <div class="rating-item">
+                                    <span>Quality</span>
+                                    <div>
+                                        <span class="rating-stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.quality %}★{% else %}☆{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <small class="text-muted ms-1">{{ review.quality }}/5</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if review.communication %}
+                                <div class="rating-item">
+                                    <span>Communication</span>
+                                    <div>
+                                        <span class="rating-stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.communication %}★{% else %}☆{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <small class="text-muted ms-1">{{ review.communication }}/5</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if review.professionalism %}
+                                <div class="rating-item">
+                                    <span>Professionalism</span>
+                                    <div>
+                                        <span class="rating-stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.professionalism %}★{% else %}☆{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <small class="text-muted ms-1">{{ review.professionalism }}/5</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if review.reliability %}
+                                <div class="rating-item">
+                                    <span>Reliability</span>
+                                    <div>
+                                        <span class="rating-stars">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.reliability %}★{% else %}☆{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                        <small class="text-muted ms-1">{{ review.reliability }}/5</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Recommendations -->
+                    <div class="mb-3">
+                        {% if review.would_recommend %}
+                            <div class="text-success mb-2">
+                                <i class="fas fa-thumbs-up"></i> Would recommend working with this person
+                            </div>
+                        {% endif %}
+                        {% if review.would_work_again %}
+                            <div class="text-success">
+                                <i class="fas fa-handshake"></i> Would work with this person again
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Response from Reviewee -->
+                    {% if review.response_comment %}
+                        <div class="response-section">
+                            <h6><i class="fas fa-reply"></i> Response from {{ review.reviewee.get_full_name|default:review.reviewee.username }}</h6>
+                            <p class="mb-1">{{ review.response_comment|linebreaks }}</p>
+                            <small class="text-muted">{{ review.response_date|date:"M d, Y" }}</small>
+                        </div>
+                    {% endif %}
+
+                    <!-- Review Actions -->
+                    <div class="review-actions">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button class="helpful-btn {% if user_marked_helpful %}active{% endif %}" 
+                                        data-review-id="{{ review.id }}">
+                                    <i class="fas fa-thumbs-up"></i> Helpful ({{ review.helpful_count }})
+                                </button>
+                            </div>
+                            <div>
+                                {% if user.is_authenticated and user != review.reviewer %}
+                                    <a href="{% url 'jobs:report_review' review.id %}" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-flag"></i> Report Review
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Reviewer Profile Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-user"></i> About Reviewer</h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        {% if review.reviewer.profile_picture %}
+                            <img src="{{ review.reviewer.profile_picture.url }}" alt="{{ review.reviewer.get_full_name }}" 
+                                 class="rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="fas fa-user text-white fa-2x"></i>
+                            </div>
+                        {% endif %}
+                        <h6>{{ review.reviewer.get_full_name|default:review.reviewer.username }}</h6>
+                    </div>
+                    
+                    <ul class="list-unstyled small">
+                        <li><strong>Member Since:</strong> {{ review.reviewer.date_joined|date:"M Y" }}</li>
+                        <li><strong>Reviews Given:</strong> {{ review.reviewer.reviews_given_count }}</li>
+                        <li><strong>Average Rating:</strong> {{ review.reviewer.average_rating }}/5</li>
+                    </ul>
+
+                    <div class="text-center">
+                        <a href="{% url 'jobs:user_reviews' review.reviewer.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye"></i> View All Reviews by {{ review.reviewer.username }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviewee Profile Summary -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-user-check"></i> About Reviewee</h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        {% if review.reviewee.profile_picture %}
+                            <img src="{{ review.reviewee.profile_picture.url }}" alt="{{ review.reviewee.get_full_name }}" 
+                                 class="rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" 
+                                 style="width: 80px; height: 80px;">
+                                <i class="fas fa-user text-white fa-2x"></i>
+                            </div>
+                        {% endif %}
+                        <h6>{{ review.reviewee.get_full_name|default:review.reviewee.username }}</h6>
+                    </div>
+                    
+                    <ul class="list-unstyled small">
+                        <li><strong>Member Since:</strong> {{ review.reviewee.date_joined|date:"M Y" }}</li>
+                        <li><strong>Total Reviews:</strong> {{ review.reviewee.total_reviews_count }}</li>
+                        <li><strong>Average Rating:</strong> {{ review.reviewee.average_rating }}/5</li>
+                        <li><strong>Reputation:</strong> 
+                            <span class="badge bg-{{ review.reviewee.reputation_level.color }}">
+                                <i class="{{ review.reviewee.reputation_level.icon }}"></i>
+                                {{ review.reviewee.reputation_level.level }}
+                            </span>
+                        </li>
+                    </ul>
+
+                    <div class="text-center">
+                        <a href="{% url 'jobs:user_reviews' review.reviewee.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye"></i> View All Reviews for {{ review.reviewee.username }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Handle helpful button click
+document.addEventListener('DOMContentLoaded', function() {
+    const helpfulBtn = document.querySelector('.helpful-btn');
+    
+    if (helpfulBtn) {
+        helpfulBtn.addEventListener('click', function() {
+            const reviewId = this.dataset.reviewId;
+            
+            fetch(`/jobs/review/${reviewId}/helpful/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const icon = this.querySelector('i');
+                    const text = this.childNodes[this.childNodes.length - 1];
+                    
+                    if (data.action === 'added') {
+                        this.classList.add('active');
+                    } else {
+                        this.classList.remove('active');
+                    }
+                    
+                    text.textContent = ` Helpful (${data.helpful_count})`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+
+{% block title %}Worker Dashboard - Event Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="avatar-container mb-3">
+                        {% if user.userprofile.profile_picture %}
+                            <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile" class="rounded-circle" width="80" height="80">
+                        {% else %}
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 80px; height: 80px; margin: 0 auto;">
+                                <i class="fas fa-user fa-2x"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h5>{{ user.get_full_name }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <span class="badge bg-success">Active Worker</span>
+                    
+                    {% if user.userprofile.verification_status == 'approved' %}
+                        <div class="mt-2">
+                            <span class="badge bg-primary">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Quick Stats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Jobs Completed:</span>
+                        <span class="fw-bold">{{ completed_jobs }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Earnings:</span>
+                        <span class="fw-bold text-success">₹{{ total_earnings|floatformat:0 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Success Rate:</span>
+                        <span class="fw-bold">{{ success_rate }}%</span>
+                    </div>
+                    {% if average_rating %}
+                    <div class="d-flex justify-content-between">
+                        <span>Avg Rating:</span>
+                        <span class="fw-bold">
+                            {{ average_rating|floatformat:1 }} 
+                            <i class="fas fa-star text-warning"></i>
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'jobs:job_list' %}" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Browse Jobs
+                        </a>
+                        <a href="{% url 'accounts:profile_update' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Worker Dashboard</h2>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="?status=all">All Applications</a></li>
+                        <li><a class="dropdown-item" href="?status=pending">Pending</a></li>
+                        <li><a class="dropdown-item" href="?status=accepted">Accepted</a></li>
+                        <li><a class="dropdown-item" href="?status=rejected">Rejected</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Alert Section -->
+            {% if pending_jobs %}
+            <div class="alert alert-info alert-dismissible fade show">
+                <i class="fas fa-clock"></i>
+                <strong>Upcoming Jobs:</strong> You have {{ pending_jobs }} job(s) starting soon. 
+                <a href="#upcoming-jobs" class="alert-link">View details</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endif %}
+            
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-primary">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Applications
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_applications }}</div>
+                                </div>
+                                <div class="fas fa-file-alt fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Accepted
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ accepted_applications }}</div>
+                                </div>
+                                <div class="fas fa-check-circle fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Pending
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_applications }}</div>
+                                </div>
+                                <div class="fas fa-clock fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border-left-info">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        This Month
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">₹{{ monthly_earnings|floatformat:0 }}</div>
+                                </div>
+                                <div class="fas fa-rupee-sign fa-2x text-gray-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Applications Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">My Applications</h5>
+                </div>
+                <div class="card-body">
+                    {% if applications %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Company</th>
+                                        <th>Date</th>
+                                        <th>Pay</th>
+                                        <th>Status</th>
+                                        <th>Applied On</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'jobs:job_detail' application.job.pk %}" class="text-decoration-none">
+                                                {{ application.job.title }}
+                                            </a>
+                                        </td>
+                                        <td>{{ application.job.poster.get_full_name }}</td>
+                                        <td>{{ application.job.start_date|date:"M d" }}</td>
+                                        <td>₹{{ application.job.pay_rate }} <small class="text-muted">{{ application.job.get_pay_type_display }}</small></td>
+                                        <td>
+                                            {% if application.status == 'pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% elif application.status == 'accepted' %}
+                                                <span class="badge bg-success">Accepted</span>
+                                            {% elif application.status == 'rejected' %}
+                                                <span class="badge bg-danger">Rejected</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ application.applied_at|date:"M d" }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'jobs:job_detail' application.job.pk %}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                {% if application.status == 'accepted' and application.job.start_date|date:"Y-m-d" <= today %}
+                                                    <a href="#" class="btn btn-outline-success btn-sm" title="Mark Complete">
+                                                        <i class="fas fa-check"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% if is_paginated %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                                </li>
+                                
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                            <h5>No Applications Yet</h5>
+                            <p class="text-muted">You haven't applied for any jobs yet. Start exploring opportunities!</p>
+                            <a href="{% url 'jobs:job_list' %}" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Browse Jobs
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Recommended Jobs -->
+            {% if recommended_jobs %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Recommended for You</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for job in recommended_jobs %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card border">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ job.title }}</h6>
+                                    <p class="card-text text-muted small">{{ job.description|truncatewords:15 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-success">₹{{ job.pay_rate }}</span>
+                                            <span class="badge bg-info">{{ job.start_date|date:"M d" }}</span>
+                                        </div>
+                                        <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-sm btn-outline-primary">
+                                            View
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+.text-xs {
+    font-size: 0.7rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,734 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event Portal - Connect with Professional Event Opportunities{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary-color: #0066cc;
+    --primary-dark: #004499;
+    --secondary-color: #00a0b0;
+    --success-color: #008000;
+    --warning-color: #ff6b00;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --dark-text: #2f3349;
+    --light-text: #666;
+    --border-color: #e1e5e9;
+    --shadow-light: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-medium: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-dark: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-text);
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><path d="M0,50 Q250,0 500,50 T1000,50 L1000,100 L0,100 Z"></path></svg>') repeat-x;
+    background-size: 1000px 100px;
+    animation: wave 20s infinite linear;
+}
+
+@keyframes wave {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-1000px); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    font-weight: 400;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-hero {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-hero-primary {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid white;
+}
+
+.btn-hero-primary:hover {
+    background: transparent;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-hero-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-hero-outline:hover {
+    background: white;
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12rem;
+    opacity: 0.7;
+}
+
+/* Stats Section */
+.stats-section {
+    background: white;
+    padding: 4rem 0;
+    margin-top: -2rem;
+    position: relative;
+    z-index: 3;
+}
+
+.stats-container {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: var(--shadow-dark);
+    margin-top: -4rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--light-text);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Features Section */
+.features-section {
+    padding: 5rem 0;
+    background: var(--light-bg);
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-text);
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--light-text);
+    margin-bottom: 4rem;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 1rem;
+}
+
+.feature-description {
+    color: var(--light-text);
+    line-height: 1.6;
+}
+
+/* How It Works Section */
+.how-it-works {
+    padding: 5rem 0;
+    background: white;
+}
+
+.step-card {
+    background: var(--light-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 auto 1.5rem;
+}
+
+.step-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 1rem;
+}
+
+.step-description {
+    color: var(--light-text);
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    padding: 5rem 0;
+    background: var(--light-bg);
+}
+
+.testimonial-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: var(--dark-text);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.author-info h6 {
+    margin: 0;
+    color: var(--dark-text);
+    font-weight: 600;
+}
+
+.author-info small {
+    color: var(--light-text);
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+    padding: 5rem 0;
+    color: white;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Recent Jobs Section */
+.recent-jobs {
+    padding: 5rem 0;
+    background: white;
+}
+
+.job-preview-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.job-preview-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--primary-color);
+}
+
+.job-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.job-preview-logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.job-preview-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin: 0;
+}
+
+.job-preview-company {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.job-preview-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.job-preview-salary {
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.job-preview-date {
+    color: var(--light-text);
+    font-size: 0.85rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-cta {
+        flex-direction: column;
+    }
+    
+    .btn-hero {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .stats-container {
+        margin-top: -2rem;
+        padding: 2rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .feature-card {
+        padding: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content">
+                    <h1 class="hero-title">Build Your Career in Events</h1>
+                    <p class="hero-subtitle">Connect with verified event opportunities, showcase your skills, and grow your professional network in the event industry.</p>
+                    <div class="hero-cta">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'accounts:register' %}" class="btn-hero btn-hero-primary">
+                                <i class="fas fa-user-plus"></i>
+                                Join Our Community
+                            </a>
+                            <a href="{% url 'jobs:job_list' %}" class="btn-hero btn-hero-outline">
+                                <i class="fas fa-search"></i>
+                                Explore Opportunities
+                            </a>
+                        {% else %}
+                            <a href="{% url 'jobs:job_list' %}" class="btn-hero btn-hero-primary">
+                                <i class="fas fa-search"></i>
+                                Find Your Next Gig
+                            </a>
+                            {% if user.can_post_jobs %}
+                            <a href="{% url 'jobs:job_create' %}" class="btn-hero btn-hero-outline">
+                                <i class="fas fa-plus"></i>
+                                Post an Opportunity
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-visual">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ total_jobs|default:"500+" }}</div>
+                        <div class="stat-label">Active Jobs</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ total_volunteers|default:"1200+" }}</div>
+                        <div class="stat-label">Volunteers</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ total_managers|default:"300+" }}</div>
+                        <div class="stat-label">Event Managers</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Our Platform?</h2>
+        <p class="section-subtitle">Everything you need to succeed in the event industry</p>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Verified Opportunities</h3>
+                    <p class="feature-description">All jobs are verified by our team to ensure legitimacy and fair compensation.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="feature-title">Direct Communication</h3>
+                    <p class="feature-description">Connect directly with event managers through WhatsApp and phone calls.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="feature-title">Build Your Reputation</h3>
+                    <p class="feature-description">Get rated and reviewed to build a strong professional profile in events.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="feature-title">Flexible Scheduling</h3>
+                    <p class="feature-description">Find events that fit your schedule with clear timing and duration.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3 class="feature-title">Fair Compensation</h3>
+                    <p class="feature-description">Transparent pricing with hourly or event-based payment options.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3 class="feature-title">Professional Network</h3>
+                    <p class="feature-description">Connect with industry professionals and grow your event career.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Get started in just a few simple steps</p>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Create Profile</h3>
+                    <p class="step-description">Sign up and create your professional profile with skills and experience.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Browse Opportunities</h3>
+                    <p class="step-description">Search and filter through verified event opportunities that match your skills.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Apply & Connect</h3>
+                    <p class="step-description">Apply for jobs and connect directly with event managers via WhatsApp.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Build Reputation</h3>
+                    <p class="step-description">Complete events, get reviews, and build your professional reputation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Jobs Section -->
+{% if recent_jobs %}
+<section class="recent-jobs">
+    <div class="container">
+        <h2 class="section-title">Latest Opportunities</h2>
+        <p class="section-subtitle">Fresh opportunities posted by event managers</p>
+        
+        <div class="row">
+            {% for job in recent_jobs %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="job-preview-card">
+                    <div class="job-preview-header">
+                        <div class="job-preview-logo">
+                            {{ job.poster.get_full_name|first|upper }}
+                        </div>
+                        <div>
+                            <h4 class="job-preview-title">{{ job.title|truncatechars:25 }}</h4>
+                            <div class="job-preview-company">{{ job.poster.get_full_name }}</div>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-map-marker-alt"></i> {{ job.location|truncatechars:30 }}
+                    </p>
+                    <p class="text-muted mb-0">{{ job.description|truncatewords:12 }}</p>
+                    <div class="job-preview-meta">
+                        <div class="job-preview-salary">₹{{ job.pay_rate }}/{{ job.get_pay_type_display }}</div>
+                        <div class="job-preview-date">{{ job.created_at|date:"M d" }}</div>
+                    </div>
+                    <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-outline-primary w-100 mt-3">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'jobs:job_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-search"></i> View All Opportunities
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <h2 class="section-title">What Our Community Says</h2>
+        <p class="section-subtitle">Real experiences from volunteers and event managers</p>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"This platform helped me find consistent event work. The verification process gives me confidence in every opportunity."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">R</div>
+                        <div class="author-info">
+                            <h6>Rajesh Kumar</h6>
+                            <small>Event Volunteer</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"As an event manager, I can quickly find reliable volunteers. The direct communication feature is a game-changer."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">P</div>
+                        <div class="author-info">
+                            <h6>Priya Sharma</h6>
+                            <small>Event Manager</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The reputation system motivated me to excel. Now I'm a top-rated volunteer with regular opportunities."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">A</div>
+                        <div class="author-info">
+                            <h6>Amit Patel</h6>
+                            <small>Senior Volunteer</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title">Ready to Start Your Event Career?</h2>
+        <p class="cta-subtitle">Join thousands of professionals building their careers in the event industry</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus"></i> Join as Volunteer
+            </a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-briefcase"></i> Join as Manager
+            </a>
+            {% else %}
+            <a href="{% url 'jobs:job_list' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-search"></i> Start Browsing
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

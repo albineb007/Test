@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if object %}Edit Job{% else %}Post New Job{% endif %} - Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-briefcase"></i> 
+                        {% if object %}Edit Job: {{ object.title }}{% else %}Post New Job{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Before posting:</strong> Make sure all details are accurate. 
+                        Your job will be reviewed before going live to ensure quality and safety.
+                    </div>
+                    
+                    <form method="post" class="job-form">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Job Posting Tips -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb"></i> Tips for a Great Job Posting
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Title & Description</h6>
+                            <ul class="small text-muted">
+                                <li>Use clear, descriptive titles</li>
+                                <li>Include key responsibilities</li>
+                                <li>Mention event type and atmosphere</li>
+                                <li>Be specific about tasks</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Requirements & Skills</h6>
+                            <ul class="small text-muted">
+                                <li>List essential vs. preferred skills</li>
+                                <li>Specify experience level needed</li>
+                                <li>Include any certifications required</li>
+                                <li>Mention physical requirements</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Payment & Benefits</h6>
+                            <ul class="small text-muted">
+                                <li>Offer competitive rates</li>
+                                <li>Be transparent about payment terms</li>
+                                <li>Include any perks or benefits</li>
+                                <li>Mention meal provisions if applicable</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Location & Timing</h6>
+                            <ul class="small text-muted">
+                                <li>Provide exact address</li>
+                                <li>Include parking information</li>
+                                <li>Specify arrival and departure times</li>
+                                <li>Mention break schedules</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculate total budget
+    const payRateInput = document.getElementById('id_pay_rate');
+    const payTypeInput = document.getElementById('id_pay_type');
+    const durationInput = document.getElementById('id_duration_hours');
+    const workersInput = document.getElementById('id_required_workers');
+    
+    function calculateBudget() {
+        const payRate = parseFloat(payRateInput.value) || 0;
+        const payType = payTypeInput.value;
+        const duration = parseInt(durationInput.value) || 0;
+        const workers = parseInt(workersInput.value) || 0;
+        
+        let budget = 0;
+        if (payType === 'hourly') {
+            budget = payRate * duration * workers;
+        } else if (payType === 'daily') {
+            budget = payRate * workers;
+        } else {
+            budget = payRate;
+        }
+        
+        // Display calculated budget
+        const budgetDisplay = document.getElementById('budget-display');
+        if (budgetDisplay) {
+            budgetDisplay.innerHTML = `Estimated Total Budget: ₹${budget.toFixed(2)}`;
+        } else {
+            // Create budget display if it doesn't exist
+            const budgetDiv = document.createElement('div');
+            budgetDiv.id = 'budget-display';
+            budgetDiv.className = 'alert alert-success mt-2';
+            budgetDiv.innerHTML = `Estimated Total Budget: ₹${budget.toFixed(2)}`;
+            workersInput.parentNode.appendChild(budgetDiv);
+        }
+    }
+    
+    // Add event listeners
+    [payRateInput, payTypeInput, durationInput, workersInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', calculateBudget);
+            input.addEventListener('change', calculateBudget);
+        }
+    });
+    
+    // Initial calculation
+    calculateBudget();
+    
+    // Form validation
+    const form = document.querySelector('.job-form');
+    form.addEventListener('submit', function(e) {
+        const startTime = document.getElementById('id_start_time').value;
+        const endTime = document.getElementById('id_end_time').value;
+        
+        if (startTime && endTime && startTime >= endTime) {
+            e.preventDefault();
+            alert('End time must be after start time.');
+            return false;
+        }
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+        }
+    });
+});
+</script>
+{% endblock %}

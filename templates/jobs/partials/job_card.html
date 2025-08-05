@@ -1,0 +1,103 @@
+<!-- Job Card Partial Template -->
+<div class="card job-card h-100 {% if recommended %}border-primary{% endif %}">
+    {% if job.is_urgent %}
+        <div class="card-header bg-danger text-white py-2">
+            <small><i class="fas fa-exclamation-triangle"></i> Urgent</small>
+        </div>
+    {% elif recommended %}
+        <div class="card-header bg-primary text-white py-2">
+            <small><i class="fas fa-magic"></i> Recommended</small>
+        </div>
+    {% endif %}
+    
+    <div class="card-body d-flex flex-column">
+        <h6 class="card-title">
+            <a href="{% url 'jobs:job_detail' job.pk %}" class="text-decoration-none">
+                {{ job.title }}
+            </a>
+        </h6>
+        
+        <div class="mb-2">
+            <span class="badge bg-info">{{ job.category.name }}</span>
+            {% if job.is_featured %}
+                <span class="badge bg-warning">Featured</span>
+            {% endif %}
+            {% if job.experience_level %}
+                <span class="badge bg-secondary">{{ job.get_experience_level_display }}</span>
+            {% endif %}
+        </div>
+        
+        <p class="card-text text-muted small">
+            {{ job.description|truncatewords:15 }}
+        </p>
+        
+        <div class="job-details mb-3">
+            <div class="row g-0 small text-muted">
+                <div class="col-12 mb-1">
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    {{ job.location }}
+                    {% if job.venue_name %}
+                        <small class="text-muted">• {{ job.venue_name }}</small>
+                    {% endif %}
+                </div>
+                <div class="col-12 mb-1">
+                    <i class="fas fa-calendar me-1"></i>
+                    {% if job.is_multi_day_event %}
+                        {{ job.event_duration_days }} days starting {{ job.event_date|date:"M d" }}
+                    {% else %}
+                        {{ job.event_date|date:"M d, Y" }}
+                    {% endif %}
+                </div>
+                <div class="col-12 mb-1">
+                    <i class="fas fa-clock me-1"></i>
+                    {{ job.start_time|time:"H:i" }} - {{ job.end_time|time:"H:i" }}
+                </div>
+                <div class="col-12 mb-1">
+                    <i class="fas fa-users me-1"></i>
+                    {{ job.remaining_positions }} of {{ job.required_workers }} positions available
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="pay-info">
+                    <h6 class="text-success mb-0">₹{{ job.pay_rate }}</h6>
+                    <small class="text-muted">{{ job.get_pay_type_display }}</small>
+                </div>
+                <div class="btn-group" role="group">
+                    {% if user.is_authenticated and user.is_volunteer %}
+                        <button class="btn btn-sm btn-outline-secondary save-job" data-job-id="{{ job.pk }}" title="Save Job">
+                            {% if job.id in saved_job_ids %}
+                                <i class="fas fa-heart text-danger"></i>
+                            {% else %}
+                                <i class="fas fa-heart"></i>
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                    <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-sm btn-primary">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Progress bar for position filling -->
+            <div class="progress mb-1" style="height: 4px;">
+                <div class="progress-bar bg-success" 
+                     role="progressbar" 
+                     style="width: {{ job.fill_percentage }}%" 
+                     aria-valuenow="{{ job.fill_percentage }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                </div>
+            </div>
+            <small class="text-muted">
+                {% if job.remaining_positions > 0 %}
+                    {{ job.remaining_positions }} position{{ job.remaining_positions|pluralize }} remaining
+                {% else %}
+                    <span class="text-warning">Position{{ job.required_workers|pluralize }} filled</span>
+                {% endif %}
+            </small>
+        </div>
+    </div>
+</div>

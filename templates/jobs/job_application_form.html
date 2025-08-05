@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Apply for {{ job.title }} - Event Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Job Summary Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">{{ job.title }}</h5>
+                            <p class="text-muted mb-2">
+                                <i class="fas fa-building"></i> {{ job.poster.get_full_name }}
+                                <span class="mx-2">|</span>
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                                <span class="mx-2">|</span>
+                                <i class="fas fa-calendar"></i> {{ job.start_date|date:"M d, Y" }}
+                            </p>
+                            <div class="d-flex gap-3">
+                                <span class="badge bg-primary">{{ job.get_pay_type_display }}</span>
+                                <span class="badge bg-success">₹{{ job.pay_rate }}</span>
+                                <span class="badge bg-info">{{ job.duration_hours }} hours</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-muted small">Application deadline</div>
+                            <div class="fw-bold">{{ job.application_deadline|date:"M d, Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-alt"></i> Application Form
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if already_applied %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Already Applied</strong><br>
+                            You have already applied for this job on {{ existing_application.applied_at|date:"M d, Y H:i" }}.
+                            <br><br>
+                            Application Status: 
+                            <span class="badge bg-{% if existing_application.status == 'accepted' %}success{% elif existing_application.status == 'rejected' %}danger{% else %}warning{% endif %}">
+                                {{ existing_application.get_status_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Job
+                            </a>
+                            <a href="{% url 'accounts:worker_dashboard' %}" class="btn btn-primary">
+                                <i class="fas fa-tachometer-alt"></i> My Dashboard
+                            </a>
+                        </div>
+                    {% else %}
+                        <form method="post" class="application-form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Application Tips:</strong>
+                                        <ul class="mb-0 mt-2">
+                                            <li>Write a personalized cover letter explaining why you're interested</li>
+                                            <li>Highlight relevant experience and skills</li>
+                                            <li>Be honest about your availability</li>
+                                            <li>Upload a recent resume if you have one</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{ form|crispy }}
+                            
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane"></i> Submit Application
+                                </button>
+                                <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-secondary btn-lg ms-2">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Why Apply Section -->
+            {% if not already_applied %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-star"></i> Why Apply Through Event Portal?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                            <h6>Verified Jobs</h6>
+                            <p class="small text-muted">All job posters are verified for your safety</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-credit-card fa-2x text-success mb-2"></i>
+                            <h6>Secure Payments</h6>
+                            <p class="small text-muted">Payment protection and timely disbursement</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-headset fa-2x text-info mb-2"></i>
+                            <h6>24/7 Support</h6>
+                            <p class="small text-muted">Round-the-clock assistance when you need it</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.application-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const coverLetter = document.getElementById('id_cover_letter');
+            
+            // Basic validation
+            if (coverLetter && coverLetter.value.trim().length < 50) {
+                e.preventDefault();
+                alert('Please write a more detailed cover letter (at least 50 characters).');
+                coverLetter.focus();
+                return false;
+            }
+            
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+            }
+        });
+        
+        // Character counter for cover letter
+        const coverLetterField = document.getElementById('id_cover_letter');
+        if (coverLetterField) {
+            const counter = document.createElement('div');
+            counter.className = 'form-text text-muted';
+            counter.id = 'cover-letter-counter';
+            coverLetterField.parentNode.appendChild(counter);
+            
+            function updateCounter() {
+                const length = coverLetterField.value.length;
+                counter.textContent = `${length} characters (minimum 50 recommended)`;
+                
+                if (length < 50) {
+                    counter.className = 'form-text text-warning';
+                } else if (length > 500) {
+                    counter.className = 'form-text text-danger';
+                } else {
+                    counter.className = 'form-text text-success';
+                }
+            }
+            
+            coverLetterField.addEventListener('input', updateCounter);
+            updateCounter(); // Initial count
+        }
+    }
+});
+</script>
+{% endblock %}
