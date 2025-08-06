@@ -1,11 +1,11 @@
 {
   "version": 2,
   "builds": [
-    { "src": "manage.py", "use": "@vercel/python", "config": { "maxLambdaSize": "50mb" } }
+    { "src": "event_portal/wsgi.py", "use": "@vercel/python" }
   ],
   "routes": [
     { "src": "/static/(.*)", "dest": "/static/$1" },
     { "src": "/media/(.*)", "dest": "/media/$1" },
-    { "src": "/(.*)", "dest": "manage.py" }
+    { "src": "/(.*)", "dest": "event_portal/wsgi.py" }
   ]
 }
