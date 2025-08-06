@@ -1,12 +1,9 @@
-python-decouple
+python-decouple>=3.8
 Django>=4.2.0,<5.0
 django-crispy-forms>=2.0
 crispy-bootstrap5>=0.7
 Pillow>=10.0.0
 django-filter>=23.0
-python-decouple>=3.8
 whitenoise
-django-rest-framework
-django-rest-framework
-gunicorn>=21.0.0
+djangorestframework
 gunicorn>=21.0.0
