@@ -3,8 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
 from django.utils import timezone
 from datetime import timedelta
+from django.http import HttpResponse
 from accounts.models import User
 from jobs.models import Job, JobApplication
+
+
+def hello_world(request):
+    """Simple hello world view for testing deployment"""
+    return HttpResponse("Hello World! Event Portal is running successfully on Render!")
 
 
 def home(request):
