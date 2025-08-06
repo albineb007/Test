@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     # Third party apps
     # 'rest_framework',  # Commented out for minimal deployment
     # 'corsheaders',  # Commented out for Vercel deployment
-    # 'crispy_forms',  # Commented out for minimal deployment
-    # 'crispy_bootstrap4',  # Commented out for minimal deployment
+    'crispy_forms',  # Required for forms
+    'crispy_bootstrap4',  # Required for Bootstrap 4 styling
     
     # Local apps
     'accounts',
@@ -146,9 +146,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
 
-# Crispy Forms (commented out for minimal deployment)
-# CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-# CRISPY_TEMPLATE_PACK = "bootstrap4"
+# Crispy Forms Configuration
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Django REST Framework (commented out for minimal deployment)
 # REST_FRAMEWORK = {

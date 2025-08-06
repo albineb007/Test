@@ -4,3 +4,5 @@ dj-database-url
 whitenoise
 gunicorn>=21.0.0
 psycopg2-binary
+django-crispy-forms>=2.0
+crispy-bootstrap4>=2022.1
