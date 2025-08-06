@@ -1,11 +1,11 @@
 {
   "version": 2,
   "builds": [
-    { "src": "event_portal/wsgi.py", "use": "@vercel/python" }
+    { "src": "manage.py", "use": "@vercel/python" }
   ],
   "routes": [
     { "src": "/static/(.*)", "dest": "/static/$1" },
     { "src": "/media/(.*)", "dest": "/media/$1" },
-    { "src": "/(.*)", "dest": "event_portal/wsgi.py" }
+    { "src": "/(.*)", "dest": "manage.py" }
   ]
 }
