@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import hello_world
 
 app_name = 'core'
 
@@ -10,4 +11,5 @@ urlpatterns = [
     path('how-it-works/', views.how_it_works, name='how_it_works'),
     path('privacy/', views.privacy_policy, name='privacy_policy'),
     path('terms/', views.terms_of_service, name='terms_of_service'),
+    path('', hello_world),
 ]
