@@ -4,5 +4,8 @@ crispy-bootstrap5>=0.7
 Pillow>=10.0.0
 django-filter>=23.0
 python-decouple>=3.8
-whitenoise>=6.5.0
+whitenoise
+django-rest-framework
+django-rest-framework
+gunicorn>=21.0.0
 gunicorn>=21.0.0
